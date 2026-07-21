@@ -1,0 +1,13 @@
+{
+  "name": "تأويل — تفسير الأحلام",
+  "short_name": "تأويل",
+  "description": "تطبيق لتفسير وتحليل الأحلام",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0d24",
+  "theme_color": "#0a0d24"
+}
