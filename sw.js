@@ -1,10 +1,10 @@
 const CACHE_NAME = 'taweel-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/dream-icon-192.png',
-  '/dream-icon-512.png'
+  '/dream-app/',
+  '/dream-app/index.html',
+  '/dream-app/manifest.json',
+  '/dream-app/dream-icon-192.png',
+  '/dream-app/dream-icon-512.png'
 ];
 
 self.addEventListener('install', event => {

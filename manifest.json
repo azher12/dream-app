@@ -1,8 +1,8 @@
 {
   "name": "تأويل — تفسير الأحلام",
   "short_name": "تأويل",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/dream-app/",
+  "scope": "/dream-app/",
   "display": "standalone",
   "background_color": "#0a0d24",
   "theme_color": "#0a0d24",
