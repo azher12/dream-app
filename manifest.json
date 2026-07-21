@@ -6,15 +6,15 @@
   "display": "standalone",
   "background_color": "#0a0d24",
   "theme_color": "#0a0d24",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "dream-icon-192.png",
+      "src": "/dream-app/dream-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "dream-icon-512.png",
+      "src": "/dream-app/dream-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
