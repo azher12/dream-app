@@ -1,14 +1,11 @@
 {
   "name": "تأويل — تفسير الأحلام",
   "short_name": "تأويل",
-  "description": "تطبيق لتفسير وتحليل الأحلام",
-  "lang": "ar",
-  "dir": "rtl",
-  "start_url": "/dream-app/",
-  "scope": "/dream-app/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0a0d24",
   "theme_color": "#0a0d24",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "dream-icon-192.png",
