@@ -1,26 +1,21 @@
-const CACHE_NAME = 'taweel-v1';
+const CACHE_NAME = 'taweel-v2';
 const urlsToCache = [
   '/dream-app/',
-  '/dream-app/index.html',
-  '/dream-app/manifest.json',
-  '/dream-app/dream-icon-192.png',
-  '/dream-app/dream-icon-512.png'
+  '/dream-app/index.html'
 ];
 
 self.addEventListener('install', event => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache).catch(err => {
-        console.warn('Cache addAll failed, continuing:', err);
-      });
-    }).catch(err => {
-      console.error('Cache install failed:', err);
+      return cache.addAll(urlsToCache);
     })
   );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
+  console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -36,28 +31,11 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') {
-    return;
-  }
-  
   event.respondWith(
     caches.match(event.request).then(response => {
-      if (response) {
-        return response;
-      }
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200 || response.type === 'error') {
-          return response;
-        }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseToCache);
-        });
-        return response;
-      }).catch(err => {
-        console.warn('Fetch failed, serving from cache if available:', err);
-        throw err;
-      });
+      return response || fetch(event.request);
+    }).catch(() => {
+      return fetch(event.request);
     })
   );
 });
