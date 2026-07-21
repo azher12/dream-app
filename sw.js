@@ -1,16 +1,18 @@
 const CACHE_NAME = 'taweel-v1';
 const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './dream-icon-192.png',
-  './dream-icon-512.png'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/dream-icon-192.png',
+  '/dream-icon-512.png'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(urlsToCache);
+      return cache.addAll(urlsToCache).catch(err => {
+        console.warn('Cache addAll failed, continuing:', err);
+      });
     }).catch(err => {
       console.error('Cache install failed:', err);
     })
@@ -53,7 +55,7 @@ self.addEventListener('fetch', event => {
         });
         return response;
       }).catch(err => {
-        console.error('Fetch failed:', err);
+        console.warn('Fetch failed, serving from cache if available:', err);
         throw err;
       });
     })
