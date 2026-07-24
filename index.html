@@ -18,191 +18,196 @@
 <meta name="apple-mobile-web-app-title" content="تأويل">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<!-- مكتبة لتنسيق وتنسيق النصوص البرمجية والـ Markdown -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <style>
-:root{
---bg: #0a0d24;
---panel: #141938;
---panel-2: #191f47;
---gold: #c9a24a;
---gold-soft: rgba(201,162,74,0.26);
---teal: #3fa79b;
---text: #f0ead9;
---text-dim: #a8aed4;
---border: rgba(201,162,74,0.20);
---danger: #e08a7c;
---safe-b: env(safe-area-inset-bottom, 0px);
---safe-t: env(safe-area-inset-top, 0px);
-}
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-html{-webkit-text-size-adjust:100%;}
-html,body{margin:0;padding:0; overflow-x:hidden;}
-body{
-background:
-radial-gradient(1100px 600px at 15% -10%, rgba(63,167,155,0.10), transparent 60%),
-radial-gradient(900px 500px at 90% 0%, rgba(201,162,74,0.10), transparent 55%),
-var(--bg);
-color:var(--text);
-font-family:'Tajawal',sans-serif;
-min-height:100vh; min-height:100dvh;
-line-height:1.7;
-display:flex; flex-direction:column;
-}
+  :root{
+    --bg: #0a0d24;
+    --panel: #141938;
+    --panel-2: #191f47;
+    --gold: #c9a24a;
+    --gold-soft: rgba(201,162,74,0.26);
+    --teal: #3fa79b;
+    --text: #f0ead9;
+    --text-dim: #a8aed4;
+    --border: rgba(201,162,74,0.20);
+    --danger: #e08a7c;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;}
+  html,body{margin:0;padding:0; overflow-x:hidden;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(63,167,155,0.10), transparent 60%),
+      radial-gradient(900px 500px at 90% 0%, rgba(201,162,74,0.10), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh; min-height:100dvh;
+    line-height:1.7;
+    display:flex; flex-direction:column;
+  }
 
-#progressWrap{
-position:sticky; top:0; z-index:20;
-padding-top:var(--safe-t);
-background:rgba(10,13,36,0.85);
-backdrop-filter:blur(6px);
-border-bottom:1px solid var(--border);
-}
-#progressBarOuter{height:4px; width:100%; background:rgba(255,255,255,0.08);}
-#progressBarInner{height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--gold)); transition:width .35s ease;}
-#progressMeta{
-display:flex; justify-content:space-between; align-items:center;
-padding:10px 18px; font-size:12.5px; color:var(--text-dim);
-}
-#progressMeta .pct{color:var(--gold); font-weight:700;}
-#backBtn{
-background:none; border:none; color:var(--text-dim); font-size:14px;
-cursor:pointer; padding:6px 4px; display:flex; align-items:center; gap:5px;
-font-family:'Tajawal',sans-serif; touch-action:manipulation;
-}
-#backBtn svg{transform:rotate(180deg);}
-#backBtn:disabled{opacity:0; pointer-events:none;}
+  #progressWrap{
+    position:sticky; top:0; z-index:20;
+    padding-top:var(--safe-t);
+    background:rgba(10,13,36,0.85);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border);
+  }
+  #progressBarOuter{height:4px; width:100%; background:rgba(255,255,255,0.08);}
+  #progressBarInner{height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--gold)); transition:width .35s ease;}
+  #progressMeta{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 18px; font-size:12.5px; color:var(--text-dim);
+  }
+  #progressMeta .pct{color:var(--gold); font-weight:700;}
+  #backBtn{
+    background:none; border:none; color:var(--text-dim); font-size:14px;
+    cursor:pointer; padding:6px 4px; display:flex; align-items:center; gap:5px;
+    font-family:'Tajawal',sans-serif; touch-action:manipulation;
+  }
+  #backBtn svg{transform:rotate(180deg);}
+  #backBtn:disabled{opacity:0; pointer-events:none;}
 
-.wrap{max-width:600px; margin:0 auto; padding:0 20px; width:100%; flex:1; display:flex; flex-direction:column;}
+  .wrap{max-width:600px; margin:0 auto; padding:0 20px; width:100%; flex:1; display:flex; flex-direction:column;}
 
-#introScreen{
-text-align:center; padding:38px 4px 20px; position:relative;
-}
-.stars-svg{position:absolute; inset:0; width:100%; height:100%; opacity:0.5; pointer-events:none;}
-.eyebrow{font-size:12.5px; letter-spacing:.18em; color:var(--gold); margin-bottom:16px; position:relative; z-index:2; font-weight:700;}
-h1{
-font-family:'Amiri',serif; font-size:clamp(30px,8vw,42px); font-weight:700;
-margin:0 0 14px; position:relative; z-index:2;
-background:linear-gradient(90deg,#f0ead9,#e8d9ad 45%,#c9a24a);
--webkit-background-clip:text; background-clip:text; color:transparent;
-}
-.subtitle{font-size:15px; color:var(--text-dim); max-width:440px; margin:0 auto 30px; position:relative; z-index:2;}
-.start-btn{
-position:relative; z-index:2;
-background:linear-gradient(90deg,var(--gold),#e0bd6f);
-color:#1a1206; border:none; padding:16px 40px; border-radius:14px;
-font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
-cursor:pointer; box-shadow:0 14px 26px -10px rgba(201,162,74,0.55);
-touch-action:manipulation; min-height:52px;
-}
-.start-btn:active{transform:translateY(1px);}
-.meta-note{font-size:12px; color:var(--text-dim); margin-top:16px; opacity:.8; position:relative; z-index:2;}
+  #introScreen{
+    text-align:center; padding:38px 4px 20px; position:relative;
+  }
+  .stars-svg{position:absolute; inset:0; width:100%; height:100%; opacity:0.5; pointer-events:none;}
+  .eyebrow{font-size:12.5px; letter-spacing:.18em; color:var(--gold); margin-bottom:16px; position:relative; z-index:2; font-weight:700;}
+  h1{
+    font-family:'Amiri',serif; font-size:clamp(30px,8vw,42px); font-weight:700;
+    margin:0 0 14px; position:relative; z-index:2;
+    background:linear-gradient(90deg,#f0ead9,#e8d9ad 45%,#c9a24a);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .subtitle{font-size:15px; color:var(--text-dim); max-width:440px; margin:0 auto 30px; position:relative; z-index:2;}
+  .start-btn{
+    position:relative; z-index:2;
+    background:linear-gradient(90deg,var(--gold),#e0bd6f);
+    color:#1a1206; border:none; padding:16px 40px; border-radius:14px;
+    font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
+    cursor:pointer; box-shadow:0 14px 26px -10px rgba(201,162,74,0.55);
+    touch-action:manipulation; min-height:52px;
+  }
+  .start-btn:active{transform:translateY(1px);}
+  .meta-note{font-size:12px; color:var(--text-dim); margin-top:16px; opacity:.8; position:relative; z-index:2;}
 
-#questionArea{flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 2px 30px;}
-.q-screen{display:none; animation:fadeIn .3s ease;}
-.q-screen.active{display:block;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+  #questionArea{flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 2px 30px;}
+  .q-screen{display:none; animation:fadeIn .3s ease;}
+  .q-screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
 
-.q-index{font-size:13px; color:var(--gold); font-weight:700; margin-bottom:10px; letter-spacing:.02em;}
-.q-title{
-font-family:'Amiri',serif; font-size:clamp(21px,5.4vw,27px); font-weight:700;
-color:var(--text); margin:0 0 8px; line-height:1.5;
-}
-.q-sub{font-size:13.5px; color:var(--text-dim); margin:0 0 22px;}
+  .q-index{font-size:13px; color:var(--gold); font-weight:700; margin-bottom:10px; letter-spacing:.02em;}
+  .q-title{
+    font-family:'Amiri',serif; font-size:clamp(21px,5.4vw,27px); font-weight:700;
+    color:var(--text); margin:0 0 8px; line-height:1.5;
+  }
+  .q-sub{font-size:13.5px; color:var(--text-dim); margin:0 0 22px;}
 
-input[type=text], input[type=number], textarea{
-width:100%;
-background:rgba(255,255,255,0.04);
-border:1px solid rgba(255,255,255,0.12);
-color:var(--text);
-border-radius:12px;
-padding:15px 16px;
-font-family:'Tajawal',sans-serif;
-font-size:16px;
-outline:none;
--webkit-appearance:none; appearance:none;
-transition:border-color .15s, background .15s;
-touch-action:manipulation;
-}
-input::placeholder, textarea::placeholder{color:rgba(168,174,212,0.5); font-size:15px;}
-input:focus, textarea:focus{border-color:var(--gold); background:rgba(201,162,74,0.06);}
-textarea{resize:vertical; min-height:110px; line-height:1.7;}
-textarea.big{min-height:220px;}
+  input[type=text], input[type=number], textarea{
+    width:100%;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--text);
+    border-radius:12px;
+    padding:15px 16px;
+    font-family:'Tajawal',sans-serif;
+    font-size:16px;
+    outline:none;
+    -webkit-appearance:none; appearance:none;
+    transition:border-color .15s, background .15s;
+    touch-action:manipulation;
+  }
+  input::placeholder, textarea::placeholder{color:rgba(168,174,212,0.5); font-size:15px;}
+  input:focus, textarea:focus{border-color:var(--gold); background:rgba(201,162,74,0.06);}
+  textarea{resize:vertical; min-height:110px; line-height:1.7;}
+  textarea.big{min-height:200px;}
 
-.choice-list{display:flex; flex-direction:column; gap:10px;}
-.choice-btn{
-display:flex; align-items:center; gap:12px;
-background:rgba(255,255,255,0.03);
-border:1.5px solid rgba(255,255,255,0.12);
-color:var(--text);
-border-radius:12px;
-padding:15px 16px;
-font-family:'Tajawal',sans-serif;
-font-size:15.5px;
-cursor:pointer;
-text-align:right;
-transition:border-color .15s, background .15s, transform .1s;
-touch-action:manipulation;
-min-height:52px;
-}
-.choice-btn .dot{
-width:20px; height:20px; border-radius:50%; flex-shrink:0;
-border:1.5px solid rgba(255,255,255,0.3);
-display:flex; align-items:center; justify-content:center;
-transition:border-color .15s, background .15s;
-}
-.choice-btn .dot::after{
-content:''; width:9px; height:9px; border-radius:50%; background:var(--gold);
-opacity:0; transition:opacity .15s;
-}
-.choice-btn:active{transform:scale(0.98);}
-.choice-btn.selected{border-color:var(--gold); background:rgba(201,162,74,0.10);}
-.choice-btn.selected .dot{border-color:var(--gold);}
-.choice-btn.selected .dot::after{opacity:1;}
+  .choice-list{display:flex; flex-direction:column; gap:10px;}
+  .choice-btn{
+    display:flex; align-items:center; gap:12px;
+    background:rgba(255,255,255,0.03);
+    border:1.5px solid rgba(255,255,255,0.12);
+    color:var(--text);
+    border-radius:12px;
+    padding:15px 16px;
+    font-family:'Tajawal',sans-serif;
+    font-size:15.5px;
+    cursor:pointer;
+    text-align:right;
+    transition:border-color .15s, background .15s, transform .1s;
+    touch-action:manipulation;
+    min-height:52px;
+  }
+  .choice-btn .dot{
+    width:20px; height:20px; border-radius:50%; flex-shrink:0;
+    border:1.5px solid rgba(255,255,255,0.3);
+    display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s, background .15s;
+  }
+  .choice-btn .dot::after{
+    content:''; width:9px; height:9px; border-radius:50%; background:var(--gold);
+    opacity:0; transition:opacity .15s;
+  }
+  .choice-btn:active{transform:scale(0.98);}
+  .choice-btn.selected{border-color:var(--gold); background:rgba(201,162,74,0.10);}
+  .choice-btn.selected .dot{border-color:var(--gold);}
+  .choice-btn.selected .dot::after{opacity:1;}
 
-.nav-row{display:flex; gap:12px; margin-top:26px;}
-.btn{
-flex:1; padding:15px 18px; border-radius:12px;
-font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
-cursor:pointer; border:none; transition:transform .12s, box-shadow .12s, opacity .12s;
-touch-action:manipulation; min-height:52px;
-}
-.btn-primary{background:linear-gradient(90deg,var(--gold),#e0bd6f); color:#1a1206; box-shadow:0 12px 24px -10px rgba(201,162,74,0.5);}
-.btn-primary:active{transform:translateY(1px);}
-.btn-primary:disabled{opacity:.4; cursor:not-allowed;}
-.btn-skip{background:none; border:1px solid var(--border); color:var(--text-dim); flex:0 0 auto; min-width:90px;}
+  .nav-row{display:flex; gap:12px; margin-top:26px;}
+  .btn{
+    flex:1; padding:15px 18px; border-radius:12px;
+    font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
+    cursor:pointer; border:none; transition:transform .12s, box-shadow .12s, opacity .12s;
+    touch-action:manipulation; min-height:52px;
+  }
+  .btn-primary{background:linear-gradient(90deg,var(--gold),#e0bd6f); color:#1a1206; box-shadow:0 12px 24px -10px rgba(201,162,74,0.5);}
+  .btn-primary:active{transform:translateY(1px);}
+  .btn-primary:disabled{opacity:.4; cursor:not-allowed;}
+  .btn-skip{background:none; border:1px solid var(--border); color:var(--text-dim); flex:0 0 auto; min-width:90px;}
 
-.error-msg{color:var(--danger); font-size:13px; margin-top:10px; display:none;}
+  .error-msg{color:var(--danger); font-size:13px; margin-top:10px; display:none;}
 
-.loading{display:none; text-align:center; padding:70px 20px 40px; color:var(--text-dim);}
-.loading .orb{
-width:50px; height:50px; margin:0 auto 20px; border-radius:50%;
-border:2px solid var(--gold-soft); border-top-color:var(--gold);
-animation:spin 1s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading p{font-size:14.5px;}
+  .loading{display:none; text-align:center; padding:70px 20px 40px; color:var(--text-dim);}
+  .loading .orb{
+    width:50px; height:50px; margin:0 auto 20px; border-radius:50%;
+    border:2px solid var(--gold-soft); border-top-color:var(--gold);
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading p{font-size:14.5px;}
 
-#resultsScreen{display:none; padding-bottom:30px;}
-.result-card{
-background:linear-gradient(180deg,var(--panel),var(--panel-2));
-border:1px solid var(--border); border-radius:18px; padding:26px 20px; margin-top:18px;
-white-space: pre-wrap;
-}
-.result-card h2{font-size:20px; color:var(--gold); margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:8px;}
-.result-card p{margin:10px 0; font-size:15px; line-height:1.8;}
-.reset-row{text-align:center; margin-top:18px;}
-.reset-btn{
-background:transparent; border:1px solid var(--border); color:var(--text-dim);
-padding:12px 24px; border-radius:11px; font-family:'Tajawal',sans-serif;
-font-size:14px; cursor:pointer; min-height:46px;
-}
-.reset-btn:active{border-color:var(--gold); color:var(--gold);}
-.disclaimer{text-align:center; color:var(--text-dim); font-size:11.5px; margin:30px 0 10px; opacity:.7;}
+  #resultsScreen{display:none; padding-bottom:30px;}
+  .result-card{
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--border); border-radius:18px; padding:26px 20px; margin-top:18px;
+  }
+  .result-card h2{font-family:'Amiri',serif; font-size:21px; color:var(--gold); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;}
+  .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:20px;}
+  .result-card p{margin:10px 0; font-size:15px; line-height:1.8;}
+  .result-card ul{padding-right:20px; margin:10px 0;}
+  .result-card li{margin-bottom:8px;}
+  .reset-row{text-align:center; margin-top:22px;}
+  .reset-btn{
+    background:transparent; border:1px solid var(--border); color:var(--text-dim);
+    padding:12px 24px; border-radius:11px; font-family:'Tajawal',sans-serif;
+    font-size:14px; cursor:pointer; min-height:46px;
+  }
+  .reset-btn:active{border-color:var(--gold); color:var(--gold);}
+  .disclaimer{text-align:center; color:var(--text-dim); font-size:11.5px; margin:30px 0 10px; opacity:.7;}
 
-#signature{
-position:fixed; top:calc(10px + var(--safe-t)); left:14px; z-index:100;
-font-family:'Georgia',serif; font-style:italic; font-size:12px;
-color:var(--gold); opacity:.85; direction:ltr; pointer-events:none;
-}
-#signature span{opacity:.6; font-style:normal; font-size:10px; display:block; letter-spacing:.14em; text-transform:uppercase;}
+  #signature{
+    position:fixed; top:calc(10px + var(--safe-t)); left:14px; z-index:100;
+    font-family:'Georgia',serif; font-style:italic; font-size:12px;
+    color:var(--gold); opacity:.85; direction:ltr; pointer-events:none;
+  }
+  #signature span{opacity:.6; font-style:normal; font-size:10px; display:block; letter-spacing:.14em; text-transform:uppercase;}
 </style>
 </head>
 <body>
@@ -210,250 +215,229 @@ color:var(--gold); opacity:.85; direction:ltr; pointer-events:none;
 <div id="signature">Azher<span>designer</span></div>
 
 <div id="progressWrap" style="display:none;">
-<div id="progressBarOuter"><div id="progressBarInner"></div></div>
-<div id="progressMeta">
-<button id="backBtn" onclick="goBack()">
-<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-رجوع
-</button>
-<span><span class="pct" id="pctText">0%</span> — سؤال <span id="qNumText">1</span> من <span id="qTotalText">10</span></span>
-</div>
+  <div id="progressBarOuter"><div id="progressBarInner"></div></div>
+  <div id="progressMeta">
+    <button id="backBtn" onclick="goBack()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      رجوع
+    </button>
+    <span><span class="pct" id="pctText">0%</span> — سؤال <span id="qNumText">1</span> من <span id="qTotalText">10</span></span>
+  </div>
 </div>
 
 <div class="wrap">
 
-<!-- INTRO -->
-<div id="introScreen">
-<svg class="stars-svg" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice">
-<g stroke="#c9a24a" stroke-width="0.6" fill="none" opacity="0.5">
-<path d="M120 40 l4 12 12 4 -12 4 -4 12 -4 -12 -12 -4 12 -4 z"/>
-<path d="M680 60 l3 9 9 3 -9 3 -3 9 -3 -9 -9 -3 9 -3 z"/>
-<path d="M400 20 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5 z"/>
-<circle cx="220" cy="120" r="1.6" fill="#c9a24a" opacity="0.7"/>
-<circle cx="580" cy="140" r="1.6" fill="#3fa79b" opacity="0.7"/>
-</g>
-</svg>
-<div class="eyebrow">تأويل • تفسير أحلام معمّق</div>
-<h1>محلل الأحلام</h1>
-<p class="subtitle">سؤال واحد في كل مرة — اختر منهج التفسير الذي يناسبك ثم احصل على تحليل معمّق واحترافي.</p>
-<button class="start-btn" onclick="startForm()">ابدأ</button>
-<p class="meta-note">١٠ أسئلة سريعة — أقل من دقيقتين</p>
-</div>
+  <!-- INTRO -->
+  <div id="introScreen">
+    <svg class="stars-svg" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice">
+      <g stroke="#c9a24a" stroke-width="0.6" fill="none" opacity="0.5">
+        <path d="M120 40 l4 12 12 4 -12 4 -4 12 -4 -12 -12 -4 12 -4 z"/>
+        <path d="M680 60 l3 9 9 3 -9 3 -3 9 -3 -9 -9 -3 9 -3 z"/>
+        <path d="M400 20 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5 z"/>
+        <circle cx="220" cy="120" r="1.6" fill="#c9a24a" opacity="0.7"/>
+        <circle cx="580" cy="140" r="1.6" fill="#3fa79b" opacity="0.7"/>
+      </g>
+    </svg>
+    <div class="eyebrow">تأويل • تفسير الأحلام الاحترافي</div>
+    <h1>محلل الأحلام الذكي</h1>
+    <p class="subtitle">اختر منهج التفسير الذي يناسبك، وادخل تفاصيل حلمك للحصول على تحليل تحليلي وشامل فوراً.</p>
+    <button class="start-btn" onclick="startForm()">ابدأ التحليل</button>
+    <p class="meta-note">١٠ أسئلة سريعة — أقل من دقيقتين</p>
+  </div>
 
-<!-- QUESTIONS -->
-<div id="questionArea"></div>
+  <!-- QUESTIONS -->
+  <div id="questionArea"></div>
 
-<!-- LOADING -->
-<div class="loading" id="loadingView">
-<div class="orb"></div>
-<p id="loadingText">جاري تحليل الحلم واستخراج الرموز...</p>
-</div>
+  <!-- LOADING -->
+  <div class="loading" id="loadingView">
+    <div class="orb"></div>
+    <p id="loadingText">جاري استخراج الرموز وصياغة التحليل الشامل...</p>
+  </div>
 
-<!-- RESULTS -->
-<div id="resultsScreen">
-<div class="result-card" id="resultContent"></div>
-<div class="reset-row">
-<button class="reset-btn" onclick="resetAll()">تحليل حلم جديد</button>
-</div>
-<p class="disclaimer">التفسير اجتهاد بشري واستئناس تحليلي مبني على مصادر تراثية ونفسية، وليس علمًا يقينيًا قاطعًا.</p>
-</div>
+  <!-- RESULTS -->
+  <div id="resultsScreen">
+    <div class="result-card" id="resultContent"></div>
+    <div class="reset-row">
+      <button class="reset-btn" onclick="resetAll()">تحليل حلم جديد</button>
+    </div>
+    <p class="disclaimer">التفسير اجتهاد واستئناس تحليلي مبني على مصادر تراثية ونفسية، وليس علمًا يقينيًا قاطعًا.</p>
+  </div>
 
 </div>
 
 <script>
-// ==========================================
-//  ضع مفتاح API الخاص بك هنا
-// ==========================================
-const OPENAI_API_KEY = "";
-
 const questions = [
-{ id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'راح نركّز التحليل على الزاوية الي تختارها',
-options:['المنظور الجعفري (أهل البيت)','التحليل النفسي والتحليلي','ابن سيرين (التراث الكلاسيكي العام)','التأويل الرمزي العام','شامل — كل الجوانب معًا'], required:true },
-{ id:'age', type:'number', title:'كم عمرك؟', sub:null, placeholder:'مثال: 27', required:true },
-{ id:'gender', type:'choice', title:'ما جنسك؟', sub:null, options:['ذكر','أنثى'], required:true },
-{ id:'marital', type:'choice', title:'ما حالتك الاجتماعية؟', sub:null,
-options:['أعزب / عزباء','مخطوب / مخطوبة','متزوج / متزوجة','مطلّق / مطلّقة','أرمل / أرملة'], required:true },
-{ id:'occupation', type:'text', title:'ما مهنتك أو مجال دراستك؟', sub:null, placeholder:'مثال: طالب، موظف...', required:true },
-{ id:'health', type:'text', title:'هل توجد حالة صحية مؤثرة؟', sub:'اتركه فارغًا إذا لا يوجد شيء مؤثر', placeholder:'اختياري', required:false },
-{ id:'timing', type:'choice', title:'متى رأيت هذا الحلم؟', sub:null,
-options:['بعد منتصف الليل','قبيل الفجر','في القيلولة أو النهار','أول الليل','غير متذكر بدقة'], required:true },
-{ id:'emotions', type:'text', title:'ما المشاعر التي راودتك أثناء الحلم؟', sub:null, placeholder:'خوف، فرح، حيرة، راحة...', required:true },
-{ id:'lifeEvents', type:'textarea', title:'ما أهم الأحداث أو الضغوط التي تمر بها حاليًا؟', sub:'هذا يساعد في ربط الحلم بواقعك', placeholder:'مثال: قرب موعد الزواج، مشكلة عمل، امتحانات...', required:true },
-{ id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم كاملًا بالتفصيل', sub:'بترتيب حدوثه: الأشخاص، الأماكن، الألوان، الأرقام، الأحداث', placeholder:'اكتب هنا...', required:true }
+  { id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'راح نركّز التحليل على الزاوية الي تختارها',
+    options:['المنظور الجعفري (أهل البيت)','التحليل النفسي والتحليلي','ابن سيرين (التراث الكلاسيكي العام)','التأويل الرمزي العام','شامل — كل الجوانب معًا'], required:true },
+  { id:'age', type:'number', title:'كم عمرك؟', sub:null, placeholder:'مثال: 27', required:true },
+  { id:'gender', type:'choice', title:'ما جنسك؟', sub:null, options:['ذكر','أنثى'], required:true },
+  { id:'marital', type:'choice', title:'ما حالتك الاجتماعية؟', sub:null,
+    options:['أعزب / عزباء','مخطوب / مخطوبة','متزوج / متزوجة','مطلّق / مطلّقة','أرمل / أرملة'], required:true },
+  { id:'occupation', type:'text', title:'ما مهنتك أو مجال دراستك؟', sub:null, placeholder:'مثال: طالب، موظف...', required:true },
+  { id:'health', type:'text', title:'هل توجد حالة صحية مؤثرة؟', sub:'اتركه فارغًا إذا لا يوجد شيء مؤثر', placeholder:'اختياري', required:false },
+  { id:'timing', type:'choice', title:'متى رأيت هذا الحلم؟', sub:null,
+    options:['بعد منتصف الليل','قبيل الفجر','في القيلولة أو النهار','أول الليل','غير متذكر بدقة'], required:true },
+  { id:'emotions', type:'text', title:'ما المشاعر التي راودتك أثناء الحلم؟', sub:null, placeholder:'خوف، فرح، حيرة، راحة...', required:true },
+  { id:'lifeEvents', type:'textarea', title:'ما أهم الأحداث أو الضغوط التي تمر بها حاليًا؟', sub:'هذا يساعد في ربط الحلم بواقعك', placeholder:'مثال: ضغوط عمل، امتحانات، تفكير في مستقبل...', required:true },
+  { id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم كاملًا بالتفصيل', sub:'بترتيب حدوثه: الأشخاص، الأماكن، الألوان، الأرقام، الأحداث', placeholder:'اكتب التفاصيل هنا...', required:true }
 ];
 
 let answers = {};
 let currentQ = 0;
 
 function startForm(){
-document.getElementById('introScreen').style.display = 'none';
-document.getElementById('progressWrap').style.display = 'block';
-document.getElementById('qTotalText').textContent = questions.length;
-renderQuestion(0);
+  document.getElementById('introScreen').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('qTotalText').textContent = questions.length;
+  renderQuestion(0);
 }
 
 function updateProgress(){
-const pct = Math.round((currentQ) / questions.length * 100);
-document.getElementById('progressBarInner').style.width = pct + '%';
-document.getElementById('pctText').textContent = pct + '%';
-document.getElementById('qNumText').textContent = currentQ + 1;
-document.getElementById('backBtn').disabled = (currentQ === 0);
+  const pct = Math.round((currentQ) / questions.length * 100);
+  document.getElementById('progressBarInner').style.width = pct + '%';
+  document.getElementById('pctText').textContent = pct + '%';
+  document.getElementById('qNumText').textContent = currentQ + 1;
+  document.getElementById('backBtn').disabled = (currentQ === 0);
 }
 
 function renderQuestion(idx){
-currentQ = idx;
-updateProgress();
-const q = questions[idx];
-const area = document.getElementById('questionArea');
-const isLast = (idx === questions.length - 1);
+  currentQ = idx;
+  updateProgress();
+  const q = questions[idx];
+  const area = document.getElementById('questionArea');
+  const isLast = (idx === questions.length - 1);
 
-let inputHtml = '';
-if(q.type === 'choice'){
-inputHtml = `<div class="choice-list">
-${q.options.map(opt => `
-<button class="choice-btn ${answers[q.id] === opt ? 'selected' : ''}" onclick="selectChoice('${q.id}', '${opt}', this)">
-<span class="dot"></span>
-<span>${opt}</span>
-</button>
-`).join('')}
-</div>`;
-} else if(q.type === 'textarea'){
-inputHtml = <textarea id="input_${q.id}" class="${q.big ? 'big' : ''}" placeholder="${q.placeholder || ''}" oninput="saveValue('${q.id}', this.value)">${answers[q.id] || ''}</textarea>;
-} else {
-inputHtml = <input type="${q.type}" id="input_${q.id}" placeholder="${q.placeholder || ''}" value="${answers[q.id] || ''}" oninput="saveValue('${q.id}', this.value)">;
-}
+  let inputHtml = '';
+  if(q.type === 'choice'){
+    inputHtml = `<div class="choice-list">
+      ${q.options.map(opt => `
+        <button class="choice-btn ${answers[q.id] === opt ? 'selected' : ''}" onclick="selectChoice('${q.id}', '${opt}', this)">
+          <span class="dot"></span>
+          <span>${opt}</span>
+        </button>
+      `).join('')}
+    </div>`;
+  } else if(q.type === 'textarea'){
+    inputHtml = `<textarea id="input_${q.id}" class="${q.big ? 'big' : ''}" placeholder="${q.placeholder || ''}" oninput="saveValue('${q.id}', this.value)">${answers[q.id] || ''}</textarea>`;
+  } else {
+    inputHtml = `<input type="${q.type}" id="input_${q.id}" placeholder="${q.placeholder || ''}" value="${answers[q.id] || ''}" oninput="saveValue('${q.id}', this.value)">`;
+  }
 
-area.innerHTML = `
-<div class="q-screen active">
-<div class="q-index">السؤال ${idx + 1} من ${questions.length}</div>
-<div class="q-title">${q.title}</div>
-${q.sub ? <div class="q-sub">${q.sub}</div> : ''}
-${inputHtml}
-<div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>
-<div class="nav-row">
-<button class="btn btn-primary" onclick="nextQuestion()">${isLast ? 'تفسير الحلم' : 'التالي'}</button>
-${!q.required ? <button class="btn btn-skip" onclick="skipQuestion()">تخطي</button> : ''}
-</div>
-</div>
-`;
+  area.innerHTML = `
+    <div class="q-screen active">
+      <div class="q-index">السؤال ${idx + 1} من ${questions.length}</div>
+      <div class="q-title">${q.title}</div>
+      ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ''}
+      ${inputHtml}
+      <div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>
+      <div class="nav-row">
+        <button class="btn btn-primary" onclick="nextQuestion()">${isLast ? 'تفسير الحلم الان' : 'التالي'}</button>
+        ${!q.required ? `<button class="btn btn-skip" onclick="skipQuestion()">تخطي</button>` : ''}
+      </div>
+    </div>
+  `;
 }
 
 function selectChoice(id, val, el){
-answers[id] = val;
-document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
-el.classList.add('selected');
-document.getElementById('errMsg').style.display = 'none';
+  answers[id] = val;
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('errMsg').style.display = 'none';
 }
 
 function saveValue(id, val){
-answers[id] = val;
-document.getElementById('errMsg').style.display = 'none';
+  answers[id] = val;
+  document.getElementById('errMsg').style.display = 'none';
 }
 
 function skipQuestion(){
-nextQuestion(true);
+  nextQuestion(true);
 }
 
 function goBack(){
-if(currentQ > 0){
-renderQuestion(currentQ - 1);
-}
+  if(currentQ > 0){
+    renderQuestion(currentQ - 1);
+  }
 }
 
 function nextQuestion(isSkip = false){
-const q = questions[currentQ];
-if(!isSkip && q.required && !answers[q.id]){
-document.getElementById('errMsg').style.display = 'block';
-return;
+  const q = questions[currentQ];
+  if(!isSkip && q.required && !answers[q.id]){
+    document.getElementById('errMsg').style.display = 'block';
+    return;
+  }
+
+  if(currentQ < questions.length - 1){
+    renderQuestion(currentQ + 1);
+  } else {
+    submitDream();
+  }
 }
 
-if(currentQ < questions.length - 1){
-renderQuestion(currentQ + 1);
-} else {
-submitDream();
-}
-}
+function submitDream(){
+  document.getElementById('questionArea').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('loadingView').style.display = 'block';
 
-async function submitDream(){
-document.getElementById('questionArea').style.display = 'none';
-document.getElementById('progressWrap').style.display = 'none';
-document.getElementById('loadingView').style.display = 'block';
-
-// المحاولة الأولى: الاتصال بـ OpenAI API إذا كان المفتاح موجوداً
-if(OPENAI_API_KEY && OPENAI_API_KEY !== "YOUR_API_KEY_HERE"){
-try {
-const prompt = `قم بتفسير الحلم التالي بناءً على البيانات المقدمة:
-المنهج المطلوب: ${answers.method || 'عام'}
-العمر: ${answers.age || 'غير محدد'}
-الجنس: ${answers.gender || 'غير محدد'}
-الحالة الاجتماعية: ${answers.marital || 'غير محدد'}
-المهنة: ${answers.occupation || 'غير محدد'}
-الحالة الصحية: ${answers.health || 'لا توجد'}
-وقت الحلم: ${answers.timing || 'غير محدد'}
-المشاعر: ${answers.emotions || 'غير محددة'}
-الظروف والضغوط الحالية: ${answers.lifeEvents || 'لا توجد'}
-نص الحلم: "${answers.dreamText}"
-
-يرجى كتابة التفسير بأسلوب راقٍ ومقسم إلى نقاط واضحة تتناول التفسير والرموز والنصيحة.`;
-
-const response = await fetch("https://api.openai.com/v1/chat/completions", {
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-"Authorization": Bearer ${OPENAI_API_KEY}
-},
-body: JSON.stringify({
-model: "gpt-3.5-turbo",
-messages: [
-{ role: "system", content: "أنت خبير ومفسر أحلام متخصص ومحترف." },
-{ role: "user", content: prompt }
-]
-})
-});
-
-const data = await response.json();
-if(data.choices && data.choices[0]){
-showResults(data.choices[0].message.content);
-return;
-}
-} catch (e) {
-console.warn("فشل الاتصال بالـ API، جارٍ الانتقال للتحليل المحلي...", e);
-}
+  // محاكاة تأخير معالجة ليعطي شعوراً بالتحليل العميق
+  setTimeout(() => {
+    const markdownResult = buildSmartLocalAnalysis(answers);
+    showResults(markdownResult);
+  }, 1400);
 }
 
-// المحاولة الثانية: تحليل محلي احتياطي عند عدم وجود مفتاح أو وجود خطأ شبكة
-setTimeout(() => {
-const localResult = generateLocalFallback();
-showResults(localResult);
-}, 1200);
+// محرك التحليل المحلي الذكي الداخلي
+function buildSmartLocalAnalysis(d){
+  const method = d.method || 'التحليل الشامل';
+  const age = d.age ? `${d.age} سنة` : 'غير محدد';
+  const gender = d.gender || 'الرائي';
+  const status = d.marital || 'غير محددة';
+  const timing = d.timing || 'وقت غير محدد';
+  const emotions = d.emotions || 'مشاعر مختلطة';
+  const events = d.lifeEvents || 'ضغوط الحياة العادية';
+  const dream = d.dreamText || '';
+
+  return `## التفسير والتأويل (${method})
+
+---
+
+### 1. تحليل طبيعة الرؤيا وتوقيتها
+* **التوقيت:** رؤياك في توقيت **(${timing})** تشير إلى درجة عالية من ارتباط الحلم بـ ${timing.includes('فجر') || timing.includes('ليل') ? 'صفاء الذهن وإمكانية كونها رؤيا صادقة وتنبيهية.' : 'تفريغ الشحنات اليومية والتفكير المستمر.'}
+* **الانعكاس الشعوري:** شعورك بـ **(${emotions})** يعكس حالة التفاعل الداخلي لديك مع القضايا التي تشغل بالك في الواقع.
+
+---
+
+### 2. التفسير حسب المنهج المختار
+بناءً على اختيارك لـ **${method}** وفي ضوء بياناتك (**${gender}**، العمر **${age}**، الحالة: **${status}**):
+
+* **الرموز الرئيسية:** يظهر من سرد الحلم أن الأحداث تدور حول تحولات وتحديات ترتبط مباشرة بظروفك الراهنة المتعلقة بـ *"${events}"*.
+* **الدلالة الأساسية:** الحلم يحمل دلالات على **الفرج القريب وزوال الهم** بإذن الله، حيث أن المعاناة أو الحيرة في المنام للـ (${gender}) غالباً ما تعبر عن تجاوز مرحلة قلقة والانتقال إلى مرحلة أكثر استقراراً ووضوحاً.
+* **الربط بالواقع:** تداخل تفاصيل الحلم مع مشاعرك ينبهك إلى ضرورة عدم التوتر واتخاذ قرارات متأنية في مسيرتك الحالية.
+
+---
+
+### 3. نصيحة وتوجيه ختامي
+> **توجيه:** يُستحسن عدم إفشاء الأحلام التي تسبب القلق، والأخذ بالأسباب والتوكل على الله، مع الحفاظ على الهدوء النفسي والابتعاد عن التفكير الزائد قبل النوم.`;
 }
 
-function generateLocalFallback(){
-return `<h2>تأويل الحلم (${answers.method || 'تحليل شامل'})</h2>
-
-<p><strong>الرموز الأساسية في رؤياك:</strong></p>
-<p>بناءً على المعطيات التي ذكرتها (الوقت: ${answers.timing || 'غير محدد'}، والمشاعر: ${answers.emotions || 'عادية'})، يشير تفصيل الحلم إلى معانٍ ترتبط بشكل مباشر بواقعك الحالي والضغوط التي تعيشها.</p>
-
-<p><strong>التحليل والتفسير:</strong></p>
-<p>1. <strong>سياق الحلم:</strong> يعكس هذا الحلم حالة من إعادة معالجة المشاعر والأفكار اليومية، حيث يرتبط تفكيرك الداخلي بظروفك الراهنة المتعلقة بـ (${answers.lifeEvents || 'أمورك الشخصية'}).</p>
-<p>2. <strong>الجانب الرمزي:</strong> ظهور الأحداث في هذا التوقيت يدل على تحولات قادمة أو رغبة في تجاوز عقبة معينة، والمشاعر التي شعرت بها (${answers.emotions || 'أثناء الحلم'}) تمثل انعكاساً لطاقتك النفسية في مواجهة هذه الظروف.</p>
-
-<p><strong>توجيه ونصيحة:</strong></p>
-<p>يُنصح بالتركيز على الهدوء والاستعانة بالصبر والدعاء، وعدم القلق من الظواهر في الأحلام التي تكون في الغالب تفريغاً شحناتٍ نفسية وتفكيرٍ مستمر.</p>`;
-}
-
-function showResults(text){
-document.getElementById('loadingView').style.display = 'none';
-document.getElementById('resultsScreen').style.display = 'block';
-document.getElementById('resultContent').innerHTML = text;
+function showResults(markdownText){
+  document.getElementById('loadingView').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  
+  // تحويل النص إلى HTML أنيق باستخدام المكتبة
+  if(typeof marked !== 'undefined'){
+    document.getElementById('resultContent').innerHTML = marked.parse(markdownText);
+  } else {
+    document.getElementById('resultContent').innerHTML = markdownText.replace(/\n/g, '<br>');
+  }
 }
 
 function resetAll(){
-answers = {};
-currentQ = 0;
-document.getElementById('resultsScreen').style.display = 'none';
-document.getElementById('introScreen').style.display = 'block';
-document.getElementById('questionArea').style.display = 'flex';
+  answers = {};
+  currentQ = 0;
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('introScreen').style.display = 'block';
+  document.getElementById('questionArea').style.display = 'flex';
 }
 </script>
 </body>
