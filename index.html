@@ -7,6 +7,8 @@
 <meta name="theme-color" content="#0a0d24">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<!-- مكتبة تحويل الـ Markdown لتنسيق إجابات الذكاء الاصطناعي بجمالية -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
   :root{
@@ -62,9 +64,7 @@
 
   .wrap{max-width:600px; margin:0 auto; padding:0 20px; width:100%; flex:1; display:flex; flex-direction:column;}
 
-  #introScreen{
-    text-align:center; padding:38px 4px 20px; position:relative;
-  }
+  #introScreen{text-align:center; padding:38px 4px 20px; position:relative;}
   .stars-svg{position:absolute; inset:0; width:100%; height:100%; opacity:0.5; pointer-events:none;}
   .eyebrow{font-size:12.5px; letter-spacing:.18em; color:var(--gold); margin-bottom:16px; position:relative; z-index:2; font-weight:700;}
   h1{
@@ -107,11 +107,8 @@
     font-family:'Tajawal',sans-serif;
     font-size:16px;
     outline:none;
-    -webkit-appearance:none; appearance:none;
     transition:border-color .15s, background .15s;
-    touch-action:manipulation;
   }
-  input::placeholder, textarea::placeholder{color:rgba(168,174,212,0.5); font-size:15px;}
   input:focus, textarea:focus{border-color:var(--gold); background:rgba(201,162,74,0.06);}
   textarea{resize:vertical; min-height:110px; line-height:1.7;}
   textarea.big{min-height:180px;}
@@ -128,21 +125,18 @@
     font-size:15.5px;
     cursor:pointer;
     text-align:right;
-    transition:border-color .15s, background .15s, transform .1s;
-    touch-action:manipulation;
+    transition:border-color .15s, background .15s;
     min-height:52px;
   }
   .choice-btn .dot{
     width:20px; height:20px; border-radius:50%; flex-shrink:0;
     border:1.5px solid rgba(255,255,255,0.3);
     display:flex; align-items:center; justify-content:center;
-    transition:border-color .15s, background .15s;
   }
   .choice-btn .dot::after{
     content:''; width:9px; height:9px; border-radius:50%; background:var(--gold);
     opacity:0; transition:opacity .15s;
   }
-  .choice-btn:active{transform:scale(0.98);}
   .choice-btn.selected{border-color:var(--gold); background:rgba(201,162,74,0.10);}
   .choice-btn.selected .dot{border-color:var(--gold);}
   .choice-btn.selected .dot::after{opacity:1;}
@@ -151,11 +145,9 @@
   .btn{
     flex:1; padding:15px 18px; border-radius:12px;
     font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
-    cursor:pointer; border:none; transition:transform .12s, box-shadow .12s, opacity .12s;
-    touch-action:manipulation; min-height:52px;
+    cursor:pointer; border:none; min-height:52px;
   }
   .btn-primary{background:linear-gradient(90deg,var(--gold),#e0bd6f); color:#1a1206; box-shadow:0 12px 24px -10px rgba(201,162,74,0.5);}
-  .btn-primary:active{transform:translateY(1px);}
 
   .error-msg{color:var(--danger); font-size:13px; margin-top:10px; display:none;}
 
@@ -166,21 +158,20 @@
     animation:spin 1s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg);}}
-  .loading p{font-size:14.5px;}
 
   #resultsScreen{display:none; padding-bottom:30px;}
   .result-card{
     background:linear-gradient(180deg,var(--panel),var(--panel-2));
     border:1px solid var(--border); border-radius:18px; padding:26px 20px; margin-top:18px;
   }
-  .result-card h2{font-family:'Amiri',serif; font-size:21px; color:var(--gold); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;}
-  .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:20px; margin-bottom:8px;}
-  .result-card p{margin:10px 0; font-size:15px; line-height:1.8;}
-  .result-card ul{padding-right:20px; margin:10px 0;}
-  .result-card li{margin-bottom:8px;}
-  .result-box{
+  .result-card h1, .result-card h2{font-family:'Amiri',serif; font-size:22px; color:var(--gold); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;}
+  .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:22px; margin-bottom:8px;}
+  .result-card p{margin:10px 0; font-size:15.5px; line-height:1.8;}
+  .result-card ul, .result-card ol{padding-right:20px; margin:10px 0;}
+  .result-card li{margin-bottom:8px; font-size:15px;}
+  .result-card blockquote{
     background:rgba(201,162,74,0.08); border-right:3px solid var(--gold);
-    padding:14px; border-radius:8px; margin:15px 0; font-size:14.5px;
+    padding:14px; border-radius:8px; margin:15px 0; font-size:15px; color:var(--text);
   }
   .reset-row{text-align:center; margin-top:22px;}
   .reset-btn{
@@ -188,8 +179,6 @@
     padding:12px 24px; border-radius:11px; font-family:'Tajawal',sans-serif;
     font-size:14px; cursor:pointer; min-height:46px;
   }
-  .reset-btn:active{border-color:var(--gold); color:var(--gold);}
-  .disclaimer{text-align:center; color:var(--text-dim); font-size:11.5px; margin:30px 0 10px; opacity:.7;}
 
   #signature{
     position:fixed; top:calc(10px + var(--safe-t)); left:14px; z-index:100;
@@ -227,10 +216,10 @@
         <circle cx="580" cy="140" r="1.6" fill="#3fa79b" opacity="0.7"/>
       </g>
     </svg>
-    <div class="eyebrow">تأويل • تفسير الأحلام الاحترافي</div>
+    <div class="eyebrow">تأويل • تفسير الأحلام بالذكاء الاصطناعي</div>
     <h1>محلل الأحلام الذكي</h1>
-    <p class="subtitle">اختر منهج التفسير الذي يناسبك، وادخل تفاصيل حلمك للحصول على تحليل شامل واحترافي.</p>
-    <button class="start-btn" onclick="startForm()">ابدأ التحليل</button>
+    <p class="subtitle">تفسير معمّق، احترافي، وذكي لأي حلم يحلل الرموز بدقة عالية وحسب المنهج الذي تختاره.</p>
+    <button class="start-btn" onclick="startForm()">ابدأ التحليل الذكي</button>
     <p class="meta-note">١٠ أسئلة سريعة — أقل من دقيقتين</p>
   </div>
 
@@ -240,7 +229,7 @@
   <!-- LOADING -->
   <div class="loading" id="loadingView">
     <div class="orb"></div>
-    <p id="loadingText">جاري استخراج الرموز وصياغة التحليل الشامل...</p>
+    <p id="loadingText">جاري استدعاء المحلل الذكي لتفكيك الرموز وتفسير الحلم...</p>
   </div>
 
   <!-- RESULTS -->
@@ -249,13 +238,18 @@
     <div class="reset-row">
       <button class="reset-btn" onclick="resetAll()">تحليل حلم جديد</button>
     </div>
-    <p class="disclaimer">التفسير اجتهاد واستئناس تحليلي مبني على مصادر تراثية ونفسية، وليس علمًا يقينيًا قاطعًا.</p>
+    <p style="text-align:center; color:var(--text-dim); font-size:11.5px; margin:30px 0 10px; opacity:.7;">التفسير اجتهاد واستئناس تحليلي قائم على معالجة الرموز والتراث، وليس علمًا يقينيًا قاطعًا.</p>
   </div>
 
 </div>
 
 <script>
-var questions = [
+// ==========================================
+// 🔑 ضَع مفتاح Google Gemini API المجاني هنا
+// ==========================================
+const GEMINI_API_KEY = "AQ.Ab8RN6IvPbMjaK7fPsYVclqg6Z7_GE_FkDu_Plxbo3tR69W12g";
+
+const questions = [
   { id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'راح نركّز التحليل على الزاوية الي تختارها',
     options:['المنظور الجعفري (أهل البيت)','التحليل النفسي والتحليلي','ابن سيرين (التراث الكلاسيكي العام)','التأويل الرمزي العام','شامل — كل الجوانب معًا'], required:true },
   { id:'age', type:'number', title:'كم عمرك؟', sub:null, placeholder:'مثال: 27', required:true },
@@ -271,8 +265,8 @@ var questions = [
   { id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم كاملًا بالتفصيل', sub:'بترتيب حدوثه: الأشخاص، الأماكن، الألوان، الأرقام، الأحداث', placeholder:'اكتب التفاصيل هنا...', required:true }
 ];
 
-var answers = {};
-var currentQ = 0;
+let answers = {};
+let currentQ = 0;
 
 function startForm(){
   document.getElementById('introScreen').style.display = 'none';
@@ -282,7 +276,7 @@ function startForm(){
 }
 
 function updateProgress(){
-  var pct = Math.round((currentQ) / questions.length * 100);
+  const pct = Math.round((currentQ) / questions.length * 100);
   document.getElementById('progressBarInner').style.width = pct + '%';
   document.getElementById('pctText').textContent = pct + '%';
   document.getElementById('qNumText').textContent = currentQ + 1;
@@ -292,43 +286,43 @@ function updateProgress(){
 function renderQuestion(idx){
   currentQ = idx;
   updateProgress();
-  var q = questions[idx];
-  var area = document.getElementById('questionArea');
-  var isLast = (idx === questions.length - 1);
+  const q = questions[idx];
+  const area = document.getElementById('questionArea');
+  const isLast = (idx === questions.length - 1);
 
-  var inputHtml = '';
+  let inputHtml = '';
   if(q.type === 'choice'){
-    inputHtml = '<div class="choice-list">' +
-      q.options.map(function(opt){
-        return '<button class="choice-btn ' + (answers[q.id] === opt ? 'selected' : '') + '" onclick="selectChoice(\'' + q.id + '\', \'' + opt + '\', this)">' +
-          '<span class="dot"></span>' +
-          '<span>' + opt + '</span>' +
-        '</button>';
-      }).join('') +
-    '</div>';
+    inputHtml = `<div class="choice-list">
+      ${q.options.map(opt => `
+        <button class="choice-btn ${answers[q.id] === opt ? 'selected' : ''}" onclick="selectChoice('${q.id}', '${opt}', this)">
+          <span class="dot"></span>
+          <span>${opt}</span>
+        </button>
+      `).join('')}
+    </div>`;
   } else if(q.type === 'textarea'){
-    inputHtml = '<textarea id="input_' + q.id + '" class="' + (q.big ? 'big' : '') + '" placeholder="' + (q.placeholder || '') + '" oninput="saveValue(\'' + q.id + '\', this.value)">' + (answers[q.id] || '') + '</textarea>';
+    inputHtml = `<textarea id="input_${q.id}" class="${q.big ? 'big' : ''}" placeholder="${q.placeholder || ''}" oninput="saveValue('${q.id}', this.value)">${answers[q.id] || ''}</textarea>`;
   } else {
-    inputHtml = '<input type="' + q.type + '" id="input_' + q.id + '" placeholder="' + (q.placeholder || '') + '" value="' + (answers[q.id] || '') + '" oninput="saveValue(\'' + q.id + '\', this.value)">';
+    inputHtml = `<input type="${q.type}" id="input_${q.id}" placeholder="${q.placeholder || ''}" value="${answers[q.id] || ''}" oninput="saveValue('${q.id}', this.value)">`;
   }
 
-  area.innerHTML = 
-    '<div class="q-screen active">' +
-      '<div class="q-index">السؤال ' + (idx + 1) + ' من ' + questions.length + '</div>' +
-      '<div class="q-title">' + q.title + '</div>' +
-      (q.sub ? '<div class="q-sub">' + q.sub + '</div>' : '') +
-      inputHtml +
-      '<div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>' +
-      '<div class="nav-row">' +
-        '<button class="btn btn-primary" onclick="nextQuestion()">' + (isLast ? 'تفسير الحلم الآن' : 'التالي') + '</button>' +
-      '</div>' +
-    '</div>';
+  area.innerHTML = `
+    <div class="q-screen active">
+      <div class="q-index">السؤال ${idx + 1} من ${questions.length}</div>
+      <div class="q-title">${q.title}</div>
+      ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ''}
+      ${inputHtml}
+      <div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>
+      <div class="nav-row">
+        <button class="btn btn-primary" onclick="nextQuestion()">${isLast ? 'تفسير الحلم بالذكاء الاصطناعي' : 'التالي'}</button>
+      </div>
+    </div>
+  `;
 }
 
 function selectChoice(id, val, el){
   answers[id] = val;
-  var btns = document.querySelectorAll('.choice-btn');
-  for(var i=0; i<btns.length; i++){ btns[i].classList.remove('selected'); }
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   document.getElementById('errMsg').style.display = 'none';
 }
@@ -339,18 +333,15 @@ function saveValue(id, val){
 }
 
 function goBack(){
-  if(currentQ > 0){
-    renderQuestion(currentQ - 1);
-  }
+  if(currentQ > 0) renderQuestion(currentQ - 1);
 }
 
 function nextQuestion(){
-  var q = questions[currentQ];
+  const q = questions[currentQ];
   if(q.required && !answers[q.id]){
     document.getElementById('errMsg').style.display = 'block';
     return;
   }
-
   if(currentQ < questions.length - 1){
     renderQuestion(currentQ + 1);
   } else {
@@ -358,92 +349,70 @@ function nextQuestion(){
   }
 }
 
-function submitDream(){
+async function submitDream(){
   document.getElementById('questionArea').style.display = 'none';
   document.getElementById('progressWrap').style.display = 'none';
   document.getElementById('loadingView').style.display = 'block';
 
-  setTimeout(function(){
-    var htmlResult = buildPureHtmlAnalysis(answers);
-    showResults(htmlResult);
-  }, 1200);
+  // صياغة توجيه خارق للذكاء الاصطناعي ليفسر الحلم بدقة متناهية
+  const promptText = `أنت خبير كبار مفسري الأحلام. المطلوب منك تقديم تفسير عميق ومفصل واحترافي جداً للحلم المذكور أدناه.
+اربط كافة التفاصيل الواردة بالنص ببعضها (الأشخاص، الأفعال، الألوان، الأطمة، المكان) واسقطها على ظروف الرائي.
+
+بيانات الرائي:
+- المنهج المطلوب للتفسير: ${answers.method || 'عام'}
+- الجنس: ${answers.gender || 'غير محدد'}
+- العمر: ${answers.age || 'غير محدد'} سنة
+- الحالة الاجتماعية: ${answers.marital || 'غير محدد'}
+- المهنة/المجال: ${answers.occupation || 'غير محدد'}
+- الحالة الصحية: ${answers.health || 'مستقرة'}
+- وقت رؤية الحلم: ${answers.timing || 'غير محدد'}
+- مشاعر الرائي أثناء الحلم: ${answers.emotions || 'غير محددة'}
+- الأحداث والضغوط الحالية: ${answers.lifeEvents || 'لا توجد'}
+
+نص الحلم المراد تفسيره:
+"${answers.dreamText}"
+
+التنسيق المطلوب للإجابة (اكتب بلغة عربية فصيلة، رصينة، ومشوقة، واستخدم عناوين وعلامات Markdown لتنسيق الجمل):
+## التعبير والتأويل العميق (${answers.method})
+### 1. تفكيك وتفسير الرموز الرئيسية في الحلم
+(اشرح كل رمز ورد في نص الحلم بأسلوب خبير، مثلاً: تقديم الطعام من القريب، نوع الطعام، زيارة الأقارب... إلخ)
+
+### 2. الربط بين الحلم والواقع والنفسية
+(ربط الرموز بعمر الرائي، وحالته، وضغوط حياته)
+
+### 3. خلاصة التفسير والتوجيه
+(نصيحة وتوجيه ختامي)`;
+
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }] }]
+      })
+    });
+
+    const data = await response.json();
+    if(data.candidates && data.candidates[0].content.parts[0].text){
+      showResults(data.candidates[0].content.parts[0].text);
+    } else {
+      throw new Error("لم يتم الحصول على استجابة");
+    }
+  } catch (e) {
+    console.error(e);
+    // في حال عدم وضع المفتاح أو حدوث مشكلة شبكة
+    showResults("## تعذر الاتصال بالمُحلل الذكي\n\nيرجى التأكد من إضافة مفتاح Gemini API الخاص بك داخل ملف `index.html` في متغير `GEMINI_API_KEY` لكي يعمل التفسير الذكي بنجاح.");
+  }
 }
 
-function buildPureHtmlAnalysis(d){
-  var method = d.method || 'التحليل الشامل';
-  var age = d.age ? d.age + ' سنة' : 'غير محدد';
-  var gender = d.gender || 'الرائي';
-  var status = d.marital || 'غير محددة';
-  var timing = d.timing || 'وقت غير محدد';
-  var emotions = d.emotions || 'مشاعر مختلطة';
-  var events = d.lifeEvents || 'أمورك اليومية والعادية';
-
-  return '<h2>التفسير والتأويل (' + method + ')</h2>' +
-    '<h3>1. طبيعة الرؤيا والتوقيت</h3>' +
-    '<p>توقيت رؤياك في <strong>(' + timing + ')</strong> مع الشعور بـ <strong>(' + emotions + ')</strong> ينعكس بشكل مباشر على الحالة النفسية والذهنية للـ ' + gender + ' أثناء النوم.</p>' +
-    '<h3>2. التحليل والرموز الرئيسية</h3>' +
-    '<ul>' +
-      '<li><strong>الرمز الأول:</strong> تداخل أحداث الحلم مع ظروفك الحالية المتعلقة بـ (' + events + ') يشير إلى تفريغ وتجاوز لضغوط تراكمت مؤخراً.</li>' +
-      '<li><strong>الرمز الثاني:</strong> يرمز هذا السياق بالنسبة لـ (' + gender + ' بعمر ' + age + ') إلى مرحلة جديدة وانفراج قريب في المسائل القلقة.</li>' +
-    '</ul>' +
-    '<div class="result-box">' +
-      '<strong>خلاصة التفسير:</strong> الحلم يحمل بشرى خير ودليلاً على الانجلاء التدريجي للهموم والضغوط، مع التأكيد على عدم القلق واستبشار الخير.' +
-    '</div>' +
-    '<h3>3. التوجيه والنصيحة</h3>' +
-    '<p>يُنصح دائماً بالتوكل على الله، وأخذ قسط من الراحة، وعدم الانشغال بالتفكير المكثف قبل النوم.</p>';
-}
-
-function buildPureHtmlAnalysis(d){
-  var method = d.method || 'المنظور الجعفري (أهل البيت)';
-  var age = d.age ? d.age + ' سنة' : 'غير محدد';
-  var gender = d.gender || 'الرائي';
-  var status = d.marital || 'غير محددة';
-  var timing = d.timing || 'وقت غير محدد';
-  var emotions = d.emotions || 'مشاعر مختلطة';
-  var events = d.lifeEvents || 'أمورك اليومية والحالية';
-  var dream = d.dreamText || 'تفاصيل الحلم';
-
-  return '<h2>التحليل التراثي المعمّق (' + method + ')</h2>' +
-    
-    '<p>بصفتنا قراءةً تحليلية مستندة إلى أصول التعبير التراثي والمنظور الجعفري في الرؤى، تم فحص تفاصيل رؤياك بدقة وتفكيك رموزها بناءً على معطياتك الشخصية <strong>(' + gender + '، العمر: ' + age + '، الحالة: ' + status + ')</strong> وسياقها الزمني والنفسي.</p>' +
-
-    '<h3>1. دلالة الأطراف والروابط الأسرية (القريب في المنام)</h3>' +
-    '<ul>' +
-      '<li><strong>ظهور شخص من الأقارب:</strong> في المعبرات التراثية، ظهور الأقارب يمثل غالباً امتداداً للرحم والسند، وغالباً ما يعكس طبيعة العلاقة الواقعية أو وجود رسالة تبادلية بينك وبينه.</li>' +
-      '<li><strong>شكل اللقاء:</strong> إن كان القريب مقبلاً بوجه بشوش، فالرؤيا تؤول على المودة وصلة الرحم وتقارب وجهات النظر، بينما تشير حركاته إلى دلالات تتعلق بالمنافع المشتركة أو التنبيه لأمر يخص العائلة.</li>' +
-    '</ul>' +
-
-    '<h3>2. تأويل رمز الطعام والضيافة وفق المنهج الجعفري</h3>' +
-    '<ul>' +
-      '<li><strong>تقديم الطعام من شخص معروف:</strong> يُعد رمزاً محموداً للغاية في الغالب؛ فالطعام في الرؤى يمثل الرزق الحلال، العلم، أو المنافع المتبادلة. وتقديمه لك من شخص قريب يعني حصول خير مقسوم أو شراكة في منفعة أو مودة صافية.</li>' +
-      '<li><strong>نوع الطعام وحاله:</strong> إن كان الطعام طازجاً وطيّب الطعم، فهو رزق واسع وتيسير في الأمور المعيشية أو النفسية. وإن كان فيه نقص، فيشير إلى ابتلاء يسير يعقبه فرج واطمئنان.</li>' +
-    '</ul>' +
-
-    '<h3>3. إسقاط الرموز على واقعك وضغوطك الحالية</h3>' +
-    '<p>عند ربط هذه الرموز بظروفك الراهنة المتمثلة في <em>("' + events + '")</em> والمشاعر التي رافقت الحلم <em>("' + emotions + '")</em> وقت <em>(' + timing + ')</em>:</p>' +
-    '<ul>' +
-      '<li><strong>التفريغ النفسي والبشري:</strong> الحلم يعكس حاجة عقلك الباطن للاستقرار والأمان، ويشير إلى أن الدعم أو الحلول لمشكلاتك الحالية قد تأتي من جهة غير متوقعة أو عبر مساندة أسرية مقربة.</li>' +
-      '<li><strong>بشارة الانفراج:</strong> التوقيت والمشاعر الإيجابية تؤكد أن هناك باب رزق أو طمأنينة سيففتح قريبًا، مما يزيل حالة القلق والتوتر المسيطرة عليك في هذه المرحلة.</li>' +
-    '</ul>' +
-
-    '<div class="result-box">' +
-      '<strong>خلاصة التعبير الخبير:</strong><br>' +
-      'هذه الرؤيا مبشرة بالخير وصلة الرحم وحصول منفعة أو رزق. وهي دعوة للاستبشار، وتوطيد العلاقات الأسرية، والتوكل على الله في تجاوز التحديات الحالية.' +
-    '</div>' +
-
-    '<h3>4. إرشادات وتوجيهات عملية</h3>' +
-    '<ul>' +
-      '<li><strong>التعامل مع الرؤيا:</strong> يُستحب لمن رأى خيراً أن يحمد الله عليه ولا يقتصره إلا على من يحب.</li>' +
-      '<li><strong>الجانب العملي:</strong> اجعل من هذا الحلم دافعاً لتعزيز التواصل الإيجابي وتصفية أي سوء تفاهم محتمل مع محيطك العائلي.</li>' +
-    '</ul>';
-}
-
-
-  
-function showResults(htmlText){
+function showResults(text){
   document.getElementById('loadingView').style.display = 'none';
   document.getElementById('resultsScreen').style.display = 'block';
-  document.getElementById('resultContent').innerHTML = htmlText;
+  if(typeof marked !== 'undefined'){
+    document.getElementById('resultContent').innerHTML = marked.parse(text);
+  } else {
+    document.getElementById('resultContent').innerHTML = text.replace(/\n/g, '<br>');
+  }
 }
 
 function resetAll(){
