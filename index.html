@@ -4,22 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
 <title>تأويل — تفسير الأحلام</title>
-<link rel="manifest" href="/dream-app/manifest.json">
-<link rel="apple-touch-icon" href="/dream-app/dream-icon-192.png">
-<link rel="apple-touch-icon" sizes="192x192" href="/dream-app/dream-icon-192.png">
-<link rel="apple-touch-icon" sizes="512x512" href="/dream-app/dream-icon-512.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/dream-app/dream-icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/dream-app/dream-icon-512.png">
-<link rel="shortcut icon" href="/dream-app/dream-icon-192.png">
 <meta name="theme-color" content="#0a0d24">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="تأويل">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-<!-- مكتبة لتنسيق وتنسيق النصوص البرمجية والـ Markdown -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
   :root{
@@ -127,7 +114,7 @@
   input::placeholder, textarea::placeholder{color:rgba(168,174,212,0.5); font-size:15px;}
   input:focus, textarea:focus{border-color:var(--gold); background:rgba(201,162,74,0.06);}
   textarea{resize:vertical; min-height:110px; line-height:1.7;}
-  textarea.big{min-height:200px;}
+  textarea.big{min-height:180px;}
 
   .choice-list{display:flex; flex-direction:column; gap:10px;}
   .choice-btn{
@@ -169,8 +156,6 @@
   }
   .btn-primary{background:linear-gradient(90deg,var(--gold),#e0bd6f); color:#1a1206; box-shadow:0 12px 24px -10px rgba(201,162,74,0.5);}
   .btn-primary:active{transform:translateY(1px);}
-  .btn-primary:disabled{opacity:.4; cursor:not-allowed;}
-  .btn-skip{background:none; border:1px solid var(--border); color:var(--text-dim); flex:0 0 auto; min-width:90px;}
 
   .error-msg{color:var(--danger); font-size:13px; margin-top:10px; display:none;}
 
@@ -189,10 +174,14 @@
     border:1px solid var(--border); border-radius:18px; padding:26px 20px; margin-top:18px;
   }
   .result-card h2{font-family:'Amiri',serif; font-size:21px; color:var(--gold); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;}
-  .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:20px;}
+  .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:20px; margin-bottom:8px;}
   .result-card p{margin:10px 0; font-size:15px; line-height:1.8;}
   .result-card ul{padding-right:20px; margin:10px 0;}
   .result-card li{margin-bottom:8px;}
+  .result-box{
+    background:rgba(201,162,74,0.08); border-right:3px solid var(--gold);
+    padding:14px; border-radius:8px; margin:15px 0; font-size:14.5px;
+  }
   .reset-row{text-align:center; margin-top:22px;}
   .reset-btn{
     background:transparent; border:1px solid var(--border); color:var(--text-dim);
@@ -240,7 +229,7 @@
     </svg>
     <div class="eyebrow">تأويل • تفسير الأحلام الاحترافي</div>
     <h1>محلل الأحلام الذكي</h1>
-    <p class="subtitle">اختر منهج التفسير الذي يناسبك، وادخل تفاصيل حلمك للحصول على تحليل تحليلي وشامل فوراً.</p>
+    <p class="subtitle">اختر منهج التفسير الذي يناسبك، وادخل تفاصيل حلمك للحصول على تحليل شامل واحترافي.</p>
     <button class="start-btn" onclick="startForm()">ابدأ التحليل</button>
     <p class="meta-note">١٠ أسئلة سريعة — أقل من دقيقتين</p>
   </div>
@@ -266,7 +255,7 @@
 </div>
 
 <script>
-const questions = [
+var questions = [
   { id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'راح نركّز التحليل على الزاوية الي تختارها',
     options:['المنظور الجعفري (أهل البيت)','التحليل النفسي والتحليلي','ابن سيرين (التراث الكلاسيكي العام)','التأويل الرمزي العام','شامل — كل الجوانب معًا'], required:true },
   { id:'age', type:'number', title:'كم عمرك؟', sub:null, placeholder:'مثال: 27', required:true },
@@ -282,8 +271,8 @@ const questions = [
   { id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم كاملًا بالتفصيل', sub:'بترتيب حدوثه: الأشخاص، الأماكن، الألوان، الأرقام، الأحداث', placeholder:'اكتب التفاصيل هنا...', required:true }
 ];
 
-let answers = {};
-let currentQ = 0;
+var answers = {};
+var currentQ = 0;
 
 function startForm(){
   document.getElementById('introScreen').style.display = 'none';
@@ -293,7 +282,7 @@ function startForm(){
 }
 
 function updateProgress(){
-  const pct = Math.round((currentQ) / questions.length * 100);
+  var pct = Math.round((currentQ) / questions.length * 100);
   document.getElementById('progressBarInner').style.width = pct + '%';
   document.getElementById('pctText').textContent = pct + '%';
   document.getElementById('qNumText').textContent = currentQ + 1;
@@ -303,44 +292,43 @@ function updateProgress(){
 function renderQuestion(idx){
   currentQ = idx;
   updateProgress();
-  const q = questions[idx];
-  const area = document.getElementById('questionArea');
-  const isLast = (idx === questions.length - 1);
+  var q = questions[idx];
+  var area = document.getElementById('questionArea');
+  var isLast = (idx === questions.length - 1);
 
-  let inputHtml = '';
+  var inputHtml = '';
   if(q.type === 'choice'){
-    inputHtml = `<div class="choice-list">
-      ${q.options.map(opt => `
-        <button class="choice-btn ${answers[q.id] === opt ? 'selected' : ''}" onclick="selectChoice('${q.id}', '${opt}', this)">
-          <span class="dot"></span>
-          <span>${opt}</span>
-        </button>
-      `).join('')}
-    </div>`;
+    inputHtml = '<div class="choice-list">' +
+      q.options.map(function(opt){
+        return '<button class="choice-btn ' + (answers[q.id] === opt ? 'selected' : '') + '" onclick="selectChoice(\'' + q.id + '\', \'' + opt + '\', this)">' +
+          '<span class="dot"></span>' +
+          '<span>' + opt + '</span>' +
+        '</button>';
+      }).join('') +
+    '</div>';
   } else if(q.type === 'textarea'){
-    inputHtml = `<textarea id="input_${q.id}" class="${q.big ? 'big' : ''}" placeholder="${q.placeholder || ''}" oninput="saveValue('${q.id}', this.value)">${answers[q.id] || ''}</textarea>`;
+    inputHtml = '<textarea id="input_' + q.id + '" class="' + (q.big ? 'big' : '') + '" placeholder="' + (q.placeholder || '') + '" oninput="saveValue(\'' + q.id + '\', this.value)">' + (answers[q.id] || '') + '</textarea>';
   } else {
-    inputHtml = `<input type="${q.type}" id="input_${q.id}" placeholder="${q.placeholder || ''}" value="${answers[q.id] || ''}" oninput="saveValue('${q.id}', this.value)">`;
+    inputHtml = '<input type="' + q.type + '" id="input_' + q.id + '" placeholder="' + (q.placeholder || '') + '" value="' + (answers[q.id] || '') + '" oninput="saveValue(\'' + q.id + '\', this.value)">';
   }
 
-  area.innerHTML = `
-    <div class="q-screen active">
-      <div class="q-index">السؤال ${idx + 1} من ${questions.length}</div>
-      <div class="q-title">${q.title}</div>
-      ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ''}
-      ${inputHtml}
-      <div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>
-      <div class="nav-row">
-        <button class="btn btn-primary" onclick="nextQuestion()">${isLast ? 'تفسير الحلم الان' : 'التالي'}</button>
-        ${!q.required ? `<button class="btn btn-skip" onclick="skipQuestion()">تخطي</button>` : ''}
-      </div>
-    </div>
-  `;
+  area.innerHTML = 
+    '<div class="q-screen active">' +
+      '<div class="q-index">السؤال ' + (idx + 1) + ' من ' + questions.length + '</div>' +
+      '<div class="q-title">' + q.title + '</div>' +
+      (q.sub ? '<div class="q-sub">' + q.sub + '</div>' : '') +
+      inputHtml +
+      '<div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>' +
+      '<div class="nav-row">' +
+        '<button class="btn btn-primary" onclick="nextQuestion()">' + (isLast ? 'تفسير الحلم الآن' : 'التالي') + '</button>' +
+      '</div>' +
+    '</div>';
 }
 
 function selectChoice(id, val, el){
   answers[id] = val;
-  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+  var btns = document.querySelectorAll('.choice-btn');
+  for(var i=0; i<btns.length; i++){ btns[i].classList.remove('selected'); }
   el.classList.add('selected');
   document.getElementById('errMsg').style.display = 'none';
 }
@@ -350,19 +338,15 @@ function saveValue(id, val){
   document.getElementById('errMsg').style.display = 'none';
 }
 
-function skipQuestion(){
-  nextQuestion(true);
-}
-
 function goBack(){
   if(currentQ > 0){
     renderQuestion(currentQ - 1);
   }
 }
 
-function nextQuestion(isSkip = false){
-  const q = questions[currentQ];
-  if(!isSkip && q.required && !answers[q.id]){
+function nextQuestion(){
+  var q = questions[currentQ];
+  if(q.required && !answers[q.id]){
     document.getElementById('errMsg').style.display = 'block';
     return;
   }
@@ -379,57 +363,40 @@ function submitDream(){
   document.getElementById('progressWrap').style.display = 'none';
   document.getElementById('loadingView').style.display = 'block';
 
-  // محاكاة تأخير معالجة ليعطي شعوراً بالتحليل العميق
-  setTimeout(() => {
-    const markdownResult = buildSmartLocalAnalysis(answers);
-    showResults(markdownResult);
-  }, 1400);
+  setTimeout(function(){
+    var htmlResult = buildPureHtmlAnalysis(answers);
+    showResults(htmlResult);
+  }, 1200);
 }
 
-// محرك التحليل المحلي الذكي الداخلي
-function buildSmartLocalAnalysis(d){
-  const method = d.method || 'التحليل الشامل';
-  const age = d.age ? `${d.age} سنة` : 'غير محدد';
-  const gender = d.gender || 'الرائي';
-  const status = d.marital || 'غير محددة';
-  const timing = d.timing || 'وقت غير محدد';
-  const emotions = d.emotions || 'مشاعر مختلطة';
-  const events = d.lifeEvents || 'ضغوط الحياة العادية';
-  const dream = d.dreamText || '';
+function buildPureHtmlAnalysis(d){
+  var method = d.method || 'التحليل الشامل';
+  var age = d.age ? d.age + ' سنة' : 'غير محدد';
+  var gender = d.gender || 'الرائي';
+  var status = d.marital || 'غير محددة';
+  var timing = d.timing || 'وقت غير محدد';
+  var emotions = d.emotions || 'مشاعر مختلطة';
+  var events = d.lifeEvents || 'أمورك اليومية والعادية';
 
-  return `## التفسير والتأويل (${method})
-
----
-
-### 1. تحليل طبيعة الرؤيا وتوقيتها
-* **التوقيت:** رؤياك في توقيت **(${timing})** تشير إلى درجة عالية من ارتباط الحلم بـ ${timing.includes('فجر') || timing.includes('ليل') ? 'صفاء الذهن وإمكانية كونها رؤيا صادقة وتنبيهية.' : 'تفريغ الشحنات اليومية والتفكير المستمر.'}
-* **الانعكاس الشعوري:** شعورك بـ **(${emotions})** يعكس حالة التفاعل الداخلي لديك مع القضايا التي تشغل بالك في الواقع.
-
----
-
-### 2. التفسير حسب المنهج المختار
-بناءً على اختيارك لـ **${method}** وفي ضوء بياناتك (**${gender}**، العمر **${age}**، الحالة: **${status}**):
-
-* **الرموز الرئيسية:** يظهر من سرد الحلم أن الأحداث تدور حول تحولات وتحديات ترتبط مباشرة بظروفك الراهنة المتعلقة بـ *"${events}"*.
-* **الدلالة الأساسية:** الحلم يحمل دلالات على **الفرج القريب وزوال الهم** بإذن الله، حيث أن المعاناة أو الحيرة في المنام للـ (${gender}) غالباً ما تعبر عن تجاوز مرحلة قلقة والانتقال إلى مرحلة أكثر استقراراً ووضوحاً.
-* **الربط بالواقع:** تداخل تفاصيل الحلم مع مشاعرك ينبهك إلى ضرورة عدم التوتر واتخاذ قرارات متأنية في مسيرتك الحالية.
-
----
-
-### 3. نصيحة وتوجيه ختامي
-> **توجيه:** يُستحسن عدم إفشاء الأحلام التي تسبب القلق، والأخذ بالأسباب والتوكل على الله، مع الحفاظ على الهدوء النفسي والابتعاد عن التفكير الزائد قبل النوم.`;
+  return '<h2>التفسير والتأويل (' + method + ')</h2>' +
+    '<h3>1. طبيعة الرؤيا والتوقيت</h3>' +
+    '<p>توقيت رؤياك في <strong>(' + timing + ')</strong> مع الشعور بـ <strong>(' + emotions + ')</strong> ينعكس بشكل مباشر على الحالة النفسية والذهنية للـ ' + gender + ' أثناء النوم.</p>' +
+    '<h3>2. التحليل والرموز الرئيسية</h3>' +
+    '<ul>' +
+      '<li><strong>الرمز الأول:</strong> تداخل أحداث الحلم مع ظروفك الحالية المتعلقة بـ (' + events + ') يشير إلى تفريغ وتجاوز لضغوط تراكمت مؤخراً.</li>' +
+      '<li><strong>الرمز الثاني:</strong> يرمز هذا السياق بالنسبة لـ (' + gender + ' بعمر ' + age + ') إلى مرحلة جديدة وانفراج قريب في المسائل القلقة.</li>' +
+    '</ul>' +
+    '<div class="result-box">' +
+      '<strong>خلاصة التفسير:</strong> الحلم يحمل بشرى خير ودليلاً على الانجلاء التدريجي للهموم والضغوط، مع التأكيد على عدم القلق واستبشار الخير.' +
+    '</div>' +
+    '<h3>3. التوجيه والنصيحة</h3>' +
+    '<p>يُنصح دائماً بالتوكل على الله، وأخذ قسط من الراحة، وعدم الانشغال بالتفكير المكثف قبل النوم.</p>';
 }
 
-function showResults(markdownText){
+function showResults(htmlText){
   document.getElementById('loadingView').style.display = 'none';
   document.getElementById('resultsScreen').style.display = 'block';
-  
-  // تحويل النص إلى HTML أنيق باستخدام المكتبة
-  if(typeof marked !== 'undefined'){
-    document.getElementById('resultContent').innerHTML = marked.parse(markdownText);
-  } else {
-    document.getElementById('resultContent').innerHTML = markdownText.replace(/\n/g, '<br>');
-  }
+  document.getElementById('resultContent').innerHTML = htmlText;
 }
 
 function resetAll(){
