@@ -2,11 +2,12 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
-<title>تأويل — تفسير الأحلام</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>تأويل — تفسير الأحلام بالذكاء الاصطناعي</title>
 <meta name="theme-color" content="#0a0d24">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <style>
   :root{
@@ -14,418 +15,174 @@
     --panel: #141938;
     --panel-2: #191f47;
     --gold: #c9a24a;
-    --gold-soft: rgba(201,162,74,0.26);
     --teal: #3fa79b;
     --text: #f0ead9;
     --text-dim: #a8aed4;
-    --border: rgba(201,162,74,0.20);
+    --border: rgba(201,162,74,0.22);
     --danger: #e08a7c;
-    --safe-b: env(safe-area-inset-bottom, 0px);
-    --safe-t: env(safe-area-inset-top, 0px);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html{-webkit-text-size-adjust:100%;}
-  html,body{margin:0;padding:0; overflow-x:hidden;}
   body{
-    background:
-      radial-gradient(1100px 600px at 15% -10%, rgba(63,167,155,0.10), transparent 60%),
-      radial-gradient(900px 500px at 90% 0%, rgba(201,162,74,0.10), transparent 55%),
-      var(--bg);
-    color:var(--text);
-    font-family:'Tajawal',sans-serif;
-    min-height:100vh; min-height:100dvh;
-    line-height:1.7;
-    display:flex; flex-direction:column;
+    margin:0; padding:20px;
+    background: radial-gradient(1000px 500px at 50% 0%, rgba(201,162,74,0.12), transparent 60%), var(--bg);
+    color:var(--text); font-family:'Tajawal',sans-serif; min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
   }
+  .container{max-width:650px; width:100%; margin:0 auto;}
+  header{text-align:center; padding:20px 0 10px;}
+  h1{font-family:'Amiri',serif; font-size:36px; color:var(--gold); margin:0 0 8px;}
+  p.sub{color:var(--text-dim); font-size:14.5px; margin:0 0 25px;}
 
-  #progressWrap{
-    position:sticky; top:0; z-index:20;
-    padding-top:var(--safe-t);
-    background:rgba(10,13,36,0.85);
-    backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--border);
+  .card{
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--border); border-radius:18px; padding:22px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
   }
-  #progressBarOuter{height:4px; width:100%; background:rgba(255,255,255,0.08);}
-  #progressBarInner{height:100%; width:0%; background:linear-gradient(90deg,var(--teal),var(--gold)); transition:width .35s ease;}
-  #progressMeta{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:10px 18px; font-size:12.5px; color:var(--text-dim);
+  
+  label{display:block; font-weight:700; margin-bottom:8px; font-size:15px; color:var(--gold);}
+  textarea, input[type=text]{
+    width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.15);
+    color:var(--text); border-radius:12px; padding:14px; font-family:'Tajawal',sans-serif;
+    font-size:15.5px; outline:none; transition:border-color .2s;
   }
-  #progressMeta .pct{color:var(--gold); font-weight:700;}
-  #backBtn{
-    background:none; border:none; color:var(--text-dim); font-size:14px;
-    cursor:pointer; padding:6px 4px; display:flex; align-items:center; gap:5px;
-    font-family:'Tajawal',sans-serif; touch-action:manipulation;
-  }
-  #backBtn svg{transform:rotate(180deg);}
-  #backBtn:disabled{opacity:0; pointer-events:none;}
+  textarea:focus, input:focus{border-color:var(--gold);}
+  textarea{min-height:160px; resize:vertical; line-height:1.7;}
 
-  .wrap{max-width:600px; margin:0 auto; padding:0 20px; width:100%; flex:1; display:flex; flex-direction:column;}
+  .api-box{margin-bottom:18px; background:rgba(0,0,0,0.2); padding:12px; border-radius:10px; border:1px dashed var(--border);}
+  .api-box summary{cursor:pointer; color:var(--text-dim); font-size:13px; font-weight:bold;}
 
-  #introScreen{text-align:center; padding:38px 4px 20px; position:relative;}
-  .stars-svg{position:absolute; inset:0; width:100%; height:100%; opacity:0.5; pointer-events:none;}
-  .eyebrow{font-size:12.5px; letter-spacing:.18em; color:var(--gold); margin-bottom:16px; position:relative; z-index:2; font-weight:700;}
-  h1{
-    font-family:'Amiri',serif; font-size:clamp(30px,8vw,42px); font-weight:700;
-    margin:0 0 14px; position:relative; z-index:2;
-    background:linear-gradient(90deg,#f0ead9,#e8d9ad 45%,#c9a24a);
-    -webkit-background-clip:text; background-clip:text; color:transparent;
+  .btn-submit{
+    width:100%; margin-top:15px;
+    background:linear-gradient(90deg,var(--gold),#e0bd6f); color:#1a1206;
+    border:none; padding:16px; border-radius:12px; font-family:'Tajawal',sans-serif;
+    font-weight:700; font-size:17px; cursor:pointer;
+    box-shadow:0 10px 20px -5px rgba(201,162,74,0.4);
   }
-  .subtitle{font-size:15px; color:var(--text-dim); max-width:440px; margin:0 auto 30px; position:relative; z-index:2;}
-  .start-btn{
-    position:relative; z-index:2;
-    background:linear-gradient(90deg,var(--gold),#e0bd6f);
-    color:#1a1206; border:none; padding:16px 40px; border-radius:14px;
-    font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
-    cursor:pointer; box-shadow:0 14px 26px -10px rgba(201,162,74,0.55);
-    touch-action:manipulation; min-height:52px;
-  }
-  .start-btn:active{transform:translateY(1px);}
-  .meta-note{font-size:12px; color:var(--text-dim); margin-top:16px; opacity:.8; position:relative; z-index:2;}
+  .btn-submit:active{transform:scale(0.99);}
 
-  #questionArea{flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 2px 30px;}
-  .q-screen{display:none; animation:fadeIn .3s ease;}
-  .q-screen.active{display:block;}
-  @keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
-
-  .q-index{font-size:13px; color:var(--gold); font-weight:700; margin-bottom:10px; letter-spacing:.02em;}
-  .q-title{
-    font-family:'Amiri',serif; font-size:clamp(21px,5.4vw,27px); font-weight:700;
-    color:var(--text); margin:0 0 8px; line-height:1.5;
-  }
-  .q-sub{font-size:13.5px; color:var(--text-dim); margin:0 0 22px;}
-
-  input[type=text], input[type=number], textarea{
-    width:100%;
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.12);
-    color:var(--text);
-    border-radius:12px;
-    padding:15px 16px;
-    font-family:'Tajawal',sans-serif;
-    font-size:16px;
-    outline:none;
-    transition:border-color .15s, background .15s;
-  }
-  input:focus, textarea:focus{border-color:var(--gold); background:rgba(201,162,74,0.06);}
-  textarea{resize:vertical; min-height:110px; line-height:1.7;}
-  textarea.big{min-height:180px;}
-
-  .choice-list{display:flex; flex-direction:column; gap:10px;}
-  .choice-btn{
-    display:flex; align-items:center; gap:12px;
-    background:rgba(255,255,255,0.03);
-    border:1.5px solid rgba(255,255,255,0.12);
-    color:var(--text);
-    border-radius:12px;
-    padding:15px 16px;
-    font-family:'Tajawal',sans-serif;
-    font-size:15.5px;
-    cursor:pointer;
-    text-align:right;
-    transition:border-color .15s, background .15s;
-    min-height:52px;
-  }
-  .choice-btn .dot{
-    width:20px; height:20px; border-radius:50%; flex-shrink:0;
-    border:1.5px solid rgba(255,255,255,0.3);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .choice-btn .dot::after{
-    content:''; width:9px; height:9px; border-radius:50%; background:var(--gold);
-    opacity:0; transition:opacity .15s;
-  }
-  .choice-btn.selected{border-color:var(--gold); background:rgba(201,162,74,0.10);}
-  .choice-btn.selected .dot{border-color:var(--gold);}
-  .choice-btn.selected .dot::after{opacity:1;}
-
-  .nav-row{display:flex; gap:12px; margin-top:26px;}
-  .btn{
-    flex:1; padding:15px 18px; border-radius:12px;
-    font-family:'Tajawal',sans-serif; font-weight:700; font-size:16px;
-    cursor:pointer; border:none; min-height:52px;
-  }
-  .btn-primary{background:linear-gradient(90deg,var(--gold),#e0bd6f); color:#1a1206; box-shadow:0 12px 24px -10px rgba(201,162,74,0.5);}
-
-  .error-msg{color:var(--danger); font-size:13px; margin-top:10px; display:none;}
-
-  .loading{display:none; text-align:center; padding:70px 20px 40px; color:var(--text-dim);}
-  .loading .orb{
-    width:50px; height:50px; margin:0 auto 20px; border-radius:50%;
-    border:2px solid var(--gold-soft); border-top-color:var(--gold);
-    animation:spin 0.6s linear infinite;
-  }
+  .loading{display:none; text-align:center; padding:30px 0;}
+  .spinner{width:40px; height:40px; margin:0 auto 15px; border:3px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
 
-  #resultsScreen{display:none; padding-bottom:30px;}
-  .result-card{
-    background:linear-gradient(180deg,var(--panel),var(--panel-2));
-    border:1px solid var(--border); border-radius:18px; padding:26px 20px; margin-top:18px;
+  #resultArea{display:none; margin-top:25px;}
+  .result-content{
+    background:var(--panel); border:1px solid var(--border); border-radius:16px;
+    padding:25px; line-height:1.8; font-size:15.5px;
   }
-  .result-card h2{font-family:'Amiri',serif; font-size:22px; color:var(--gold); margin-top:0; border-bottom:1px solid var(--border); padding-bottom:10px;}
-  .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:22px; margin-bottom:8px;}
-  .result-card p{margin:10px 0; font-size:15.5px; line-height:1.8;}
-  .result-card ul{padding-right:20px; margin:10px 0;}
-  .result-card li{margin-bottom:12px; font-size:15px; line-height:1.8;}
-  .result-card strong{color:var(--gold);}
-  .result-box{
-    background:rgba(201,162,74,0.08); border-right:3px solid var(--gold);
-    padding:16px; border-radius:8px; margin:20px 0; font-size:15px; color:var(--text); line-height:1.8;
-  }
-  .reset-row{text-align:center; margin-top:22px;}
-  .reset-btn{
-    background:transparent; border:1px solid var(--border); color:var(--text-dim);
-    padding:12px 24px; border-radius:11px; font-family:'Tajawal',sans-serif;
-    font-size:14px; cursor:pointer; min-height:46px;
-  }
+  .result-content h2{font-family:'Amiri',serif; color:var(--gold); border-bottom:1px solid var(--border); padding-bottom:10px; margin-top:0;}
+  .result-content h3{color:var(--teal); margin-top:20px;}
+  .result-content ul{padding-right:20px;}
+  .result-content li{margin-bottom:8px;}
 
-  #signature{
-    position:fixed; top:calc(10px + var(--safe-t)); left:14px; z-index:100;
-    font-family:'Georgia',serif; font-style:italic; font-size:12px;
-    color:var(--gold); opacity:.85; direction:ltr; pointer-events:none;
-  }
-  #signature span{opacity:.6; font-style:normal; font-size:10px; display:block; letter-spacing:.14em; text-transform:uppercase;}
+  #signature{position:fixed; top:12px; left:14px; font-family:'Georgia',serif; font-style:italic; font-size:11px; color:var(--gold); opacity:.7;}
 </style>
 </head>
 <body>
 
-<div id="signature">Azher<span>designer</span></div>
+<div id="signature">Azher designer</div>
 
-<div id="progressWrap" style="display:none;">
-  <div id="progressBarOuter"><div id="progressBarInner"></div></div>
-  <div id="progressMeta">
-    <button id="backBtn" onclick="goBack()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-      رجوع
-    </button>
-    <span><span class="pct" id="pctText">0%</span> — سؤال <span id="qNumText">1</span> من <span id="qTotalText">10</span></span>
-  </div>
-</div>
+<div class="container">
+  <header>
+    <h1>محلل الأحلام الذكي</h1>
+    <p class="sub">تفسير معمق بالذكاء الاصطناعي يستقرئ الرموز بدقة كبار المفسرين</p>
+  </header>
 
-<div class="wrap">
+  <div class="card">
+    <!-- إمكانية حفظ أو تعديل المفتاح بسهولة -->
+    <details class="api-box">
+      <summary>⚙️ إعدادات مفتاح الذكاء الاصطناعي (Gemini API Key)</summary>
+      <div style="margin-top:10px;">
+        <input type="text" id="apiKeyInput" placeholder="ضع المفتاح الذي يبدأ بـ AIzaSy هنا..." />
+        <p style="font-size:11px; color:var(--text-dim); margin:6px 0 0;">يتم حفظ المفتاح في متصفحك تلقائياً ليعمل دائماً.</p>
+      </div>
+    </details>
 
-  <!-- INTRO -->
-  <div id="introScreen">
-    <svg class="stars-svg" viewBox="0 0 800 260" preserveAspectRatio="xMidYMid slice">
-      <g stroke="#c9a24a" stroke-width="0.6" fill="none" opacity="0.5">
-        <path d="M120 40 l4 12 12 4 -12 4 -4 12 -4 -12 -12 -4 12 -4 z"/>
-        <path d="M680 60 l3 9 9 3 -9 3 -3 9 -3 -9 -9 -3 9 -3 z"/>
-        <path d="M400 20 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5 z"/>
-        <circle cx="220" cy="120" r="1.6" fill="#c9a24a" opacity="0.7"/>
-        <circle cx="580" cy="140" r="1.6" fill="#3fa79b" opacity="0.7"/>
-      </g>
-    </svg>
-    <div class="eyebrow">تأويل • تفسير الأحلام الاحترافي</div>
-    <h1>محلل الأحلام الخبير</h1>
-    <p class="subtitle">تأويل عميق وتفكيك احترافي لرموز الرؤى حسب التراث الكلاسيكي والمنظور المختار.</p>
-    <button class="start-btn" onclick="startForm()">ابدأ التحليل</button>
-    <p class="meta-note">١٠ أسئلة سريعة — أقل من دقيقتين</p>
-  </div>
+    <label for="dreamInput">اكتب تفاصيل الحلم (ومعه أي معلومات كالعمر، المشاعر، أو الظروف):</label>
+    <textarea id="dreamInput" placeholder="مثال: حلمت أن شخصاً من أقاربي قدم لي طبق طعام... عمري 35 سنة، متزوج، وأمر بضغوط عمل..."></textarea>
 
-  <!-- QUESTIONS -->
-  <div id="questionArea"></div>
+    <button class="btn-submit" onclick="analyzeDream()">تحليل وتفسير الحلم عميقاً</button>
 
-  <!-- LOADING -->
-  <div class="loading" id="loadingView">
-    <div class="orb"></div>
-    <p id="loadingText">جاري تفكيك رموز الحلم وصياغة التقرير المعمّق...</p>
-  </div>
-
-  <!-- RESULTS -->
-  <div id="resultsScreen">
-    <div class="result-card" id="resultContent"></div>
-    <div class="reset-row">
-      <button class="reset-btn" onclick="resetAll()">تحليل حلم جديد</button>
+    <div class="loading" id="loadingView">
+      <div class="spinner"></div>
+      <div>جاري البحث والتفكير في رموز الحلم وصياغة التفسير المعمق...</div>
     </div>
-    <p style="text-align:center; color:var(--text-dim); font-size:11.5px; margin:30px 0 10px; opacity:.7;">التفسير اجتهاد واستئناس تحليلي قائم على معالجة الرموز والتراث، وليس علمًا يقينيًا قاطعًا.</p>
   </div>
 
+  <div id="resultArea">
+    <div class="card result-content" id="resultCard"></div>
+  </div>
 </div>
 
 <script>
-var questions = [
-  { id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'راح نركّز التحليل على الزاوية الي تختارها',
-    options:['المنظور الجعفري (أهل البيت)','التحليل النفسي والتحليلي','ابن سيرين (التراث الكلاسيكي العام)','التأويل الرمزي العام','شامل — كل الجوانب معًا'], required:true },
-  { id:'age', type:'number', title:'كم عمرك؟', sub:null, placeholder:'مثال: 27', required:true },
-  { id:'gender', type:'choice', title:'ما جنسك؟', sub:null, options:['ذكر','أنثى'], required:true },
-  { id:'marital', type:'choice', title:'ما حالتك الاجتماعية؟', sub:null,
-    options:['أعزب / عزباء','مخطوب / مخطوبة','متزوج / متزوجة','مطلّق / مطلّقة','أرمل / أرملة'], required:true },
-  { id:'occupation', type:'text', title:'ما مهنتك أو مجال دراستك؟', sub:null, placeholder:'مثال: طالب، موظف...', required:true },
-  { id:'health', type:'text', title:'هل توجد حالة صحية مؤثرة؟', sub:'اتركه فارغًا إذا لا يوجد شيء مؤثر', placeholder:'اختياري', required:false },
-  { id:'timing', type:'choice', title:'متى رأيت هذا الحلم؟', sub:null,
-    options:['بعد منتصف الليل','قبيل الفجر','في القيلولة أو النهار','أول الليل','غير متذكر بدقة'], required:true },
-  { id:'emotions', type:'text', title:'ما المشاعر التي راودتك أثناء الحلم؟', sub:null, placeholder:'خوف، فرح، حيرة، راحة...', required:true },
-  { id:'lifeEvents', type:'textarea', title:'ما أهم الأحداث أو الضغوط التي تمر بها حاليًا؟', sub:'هذا يساعد في ربط الحلم بواقعك', placeholder:'مثال: ضغوط عمل، امتحانات، تفكير في مستقبل...', required:true },
-  { id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم كاملًا بالتفصيل', sub:'بترتيب حدوثه: الأشخاص، الأماكن، الألوان، الأرقام، الأحداث', placeholder:'اكتب التفاصيل هنا...', required:true }
-];
+// المفتاح الافتراضي (إن وجد)
+let defaultKey = "";
 
-var answers = {};
-var currentQ = 0;
-
-function startForm(){
-  document.getElementById('introScreen').style.display = 'none';
-  document.getElementById('progressWrap').style.display = 'block';
-  document.getElementById('qTotalText').textContent = questions.length;
-  renderQuestion(0);
-}
-
-function updateProgress(){
-  var pct = Math.round((currentQ) / questions.length * 100);
-  document.getElementById('progressBarInner').style.width = pct + '%';
-  document.getElementById('pctText').textContent = pct + '%';
-  document.getElementById('qNumText').textContent = currentQ + 1;
-  document.getElementById('backBtn').disabled = (currentQ === 0);
-}
-
-function renderQuestion(idx){
-  currentQ = idx;
-  updateProgress();
-  var q = questions[idx];
-  var area = document.getElementById('questionArea');
-  var isLast = (idx === questions.length - 1);
-
-  var inputHtml = '';
-  if(q.type === 'choice'){
-    inputHtml = '<div class="choice-list">' +
-      q.options.map(function(opt){
-        return '<button class="choice-btn ' + (answers[q.id] === opt ? 'selected' : '') + '" onclick="selectChoice(\'' + q.id + '\', \'' + opt + '\', this)">' +
-          '<span class="dot"></span>' +
-          '<span>' + opt + '</span>' +
-        '</button>';
-      }).join('') +
-    '</div>';
-  } else if(q.type === 'textarea'){
-    inputHtml = '<textarea id="input_' + q.id + '" class="' + (q.big ? 'big' : '') + '" placeholder="' + (q.placeholder || '') + '" oninput="saveValue(\'' + q.id + '\', this.value)">' + (answers[q.id] || '') + '</textarea>';
-  } else {
-    inputHtml = '<input type="' + q.type + '" id="input_' + q.id + '" placeholder="' + (q.placeholder || '') + '" value="' + (answers[q.id] || '') + '" oninput="saveValue(\'' + q.id + '\', this.value)">';
+// تحميل المفتاح المحفوظ من ذاكرة المتصفح إن وجد
+window.onload = function() {
+  let savedKey = localStorage.getItem('gemini_key');
+  if(savedKey) {
+    document.getElementById('apiKeyInput').value = savedKey;
   }
+};
 
-  area.innerHTML = 
-    '<div class="q-screen active">' +
-      '<div class="q-index">السؤال ' + (idx + 1) + ' من ' + questions.length + '</div>' +
-      '<div class="q-title">' + q.title + '</div>' +
-      (q.sub ? '<div class="q-sub">' + q.sub + '</div>' : '') +
-      inputHtml +
-      '<div class="error-msg" id="errMsg">يرجى ملء هذا الخيار للمتابعة</div>' +
-      '<div class="nav-row">' +
-        '<button class="btn btn-primary" onclick="nextQuestion()">' + (isLast ? 'تفسير الحلم الآن' : 'التالي') + '</button>' +
-      '</div>' +
-    '</div>';
-}
+async function analyzeDream() {
+  const dreamText = document.getElementById('dreamInput').value.trim();
+  let apiKey = document.getElementById('apiKeyInput').value.trim() || defaultKey;
 
-function selectChoice(id, val, el){
-  answers[id] = val;
-  var btns = document.querySelectorAll('.choice-btn');
-  for(var i=0; i<btns.length; i++){ btns[i].classList.remove('selected'); }
-  el.classList.add('selected');
-  document.getElementById('errMsg').style.display = 'none';
-}
-
-function saveValue(id, val){
-  answers[id] = val;
-  document.getElementById('errMsg').style.display = 'none';
-}
-
-function goBack(){
-  if(currentQ > 0) renderQuestion(currentQ - 1);
-}
-
-function nextQuestion(){
-  var q = questions[currentQ];
-  if(q.required && !answers[q.id]){
-    document.getElementById('errMsg').style.display = 'block';
+  if(!dreamText) {
+    alert("يرجى كتابة نص الحلم أولاً.");
     return;
   }
-  if(currentQ < questions.length - 1){
-    renderQuestion(currentQ + 1);
-  } else {
-    submitDream();
-  }
-}
 
-function submitDream(){
-  document.getElementById('questionArea').style.display = 'none';
-  document.getElementById('progressWrap').style.display = 'none';
+  if(!apiKey) {
+    alert("يرجى وضع مفتاح Gemini API في الإعدادات أعلى الصفحة لكي يشتغل التفسير الذكي.");
+    return;
+  }
+
+  // حفظ المفتاح للاستخدام المستقبلي
+  localStorage.setItem('gemini_key', apiKey);
+
   document.getElementById('loadingView').style.display = 'block';
+  document.getElementById('resultArea').style.display = 'none';
 
-  // معالجة فورية وتوليد سريع بدون تأخير
-  setTimeout(function(){
-    var htmlResult = generateHumanStyleAnalysis(answers);
-    showResults(htmlResult);
-  }, 400);
-}
+  const prompt = `أنت خبير وكبير مفسري الأحلام وتعبير الرؤى وفق المناهج التراثية (كابن سيرين والمنظور الجعفري) والتحليل النفسي.
+المطلوب منك تقديم تفسير معمق، احترافي، ودقيق جداً للحلم والنصوص المذكورة أدناه.
+حلل كل رمز بشكل مستقل (الأقارب، الطعام، المكان، الأفعال، المشاعر) ثم اربط بينها وبين الظروف المذكورة.
 
-// محرك الصياغة الطبيعية المعمقة (الأسلوب البشري)
-function generateHumanStyleAnalysis(d){
-  var dt = d.dreamText || '';
-  var method = d.method || 'المنظور الشعبي والتراثي';
-  
-  var symbolBlocks = [];
+النص المُدخل من الرائي:
+"${dreamText}"
 
-  // 1. تحليل الرموز بسلاسة وبدون أقواس
-  if(dt.indexOf('طعام') !== -1 || dt.indexOf('أكل') !== -1 || dt.indexOf('طبق') !== -1 || dt.indexOf('صحن') !== -1){
-    symbolBlocks.push(
-      '<li><strong>تقديم طبق من الطعام:</strong> إطعام الآخرين أو تقديم الأكل في الرؤى يُعد من الرموز المحمودة جداً في التراث؛ فهو يدل على الخير، والمبادرة الطيبة، والصلة، أو المنافع والمساندة المتبادلة بين الأقارب.</li>'
-    );
+اكتب التفسير بأسلوب رصين وفصيح بدون مقدمات فارغة، مقسم إلى:
+## التعبير والتأويل العميق
+### 1. تفكيك الرموز الرئيسية في الحلم
+### 2. إسقاط الرؤيا على الواقع والنفسية
+### 3. الخلاصة والتوجيه الإرشادي`;
+
+  try {
+    // الاتصال بالذكاء الاصطناعي API
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+
+    const data = await response.json();
+
+    if(data.candidates && data.candidates[0].content.parts[0].text) {
+      let outputText = data.candidates[0].content.parts[0].text;
+      document.getElementById('resultCard').innerHTML = marked.parse(outputText);
+      document.getElementById('resultArea').style.display = 'block';
+    } else {
+      throw new Error("خطأ في الاستجابة أو المفتاح غير صالح");
+    }
+  } catch(err) {
+    console.error(err);
+    alert("حدث خطأ أثناء الاتصال بالذكاء الاصطناعي. تأكد من أن مفتاح الـ API يبدأ بـ AIzaSy وأنك متصل بالإنترنت.");
+  } finally {
+    document.getElementById('loadingView').style.display = 'none';
   }
-  if(dt.indexOf('زوج الأخت') !== -1 || dt.indexOf('نسيب') !== -1 || dt.indexOf('زوج اختي') !== -1){
-    symbolBlocks.push(
-      '<li><strong>حضور زوج الأخت في المنام:</strong> يرمز دخول زوج الأخت للبيت إلى التواصل العائلي، أو وجود موضوع مشترك، أو نقل خبر سار يخص العائلة ويعزز التقارب.</li>'
-    );
-  } else if(dt.indexOf('قريب') !== -1 || dt.indexOf('اقارب') !== -1 || dt.indexOf('أقارب') !== -1 || dt.indexOf('أخت') !== -1 || dt.indexOf('اخت') !== -1){
-    symbolBlocks.push(
-      '<li><strong>صلة الأقارب في الرؤيا:</strong> حضور الشخصيات المقربة في المنظور التراثي يعكس امتداد الروابط الأسرية، ومؤشراً على التفاهم وانجلاء أي سوء فهم سابق.</li>'
-    );
-  }
-  if(dt.indexOf('طيران') !== -1 || dt.indexOf('أطير') !== -1 || dt.indexOf('سماء') !== -1){
-    symbolBlocks.push(
-      '<li><strong>الطيران والعلو:</strong> من رموز التحرر ونيل منزلة رفيعة، وتغلب الرائي على العوائق الواقعية التي تشغل باله.</li>'
-    );
-  }
-  if(dt.indexOf('ماء') !== -1 || dt.indexOf('نهر') !== -1 || dt.indexOf('مطر') !== -1){
-    symbolBlocks.push(
-      '<li><strong>الماء والارتواء:</strong> رمز لصفاء السريرة، والفرج القريب، وتجدد الطاقة النفسية والراحة بعد فترة إجهاد.</li>'
-    );
-  }
-
-  // إذا لم يتعرف على رمز خاص، يقدم تحليلاً عاماً رصيناً
-  if(symbolBlocks.length === 0){
-    symbolBlocks.push(
-      '<li><strong>الرموز الرئيسية وحركتها:</strong> تفاصيل الرؤيا تعكس تفاعلاً طيباً وحركة محمودة في واقعك، وتدل على سعي مبشر بالخير أو موضوع يكتمل بنجاح.</li>'
-    );
-  }
-
-  // إضافة تحليل أثر نوع الطعام غير المباشر إن ورد
-  if(dt.indexOf('طبق') !== -1 || dt.indexOf('طعام') !== -1){
-    symbolBlocks.push(
-      '<li><strong>كون الطعام غير محدد التفاصيل:</strong> عدم تحديد النوع يُفسَّر غالباً بـ رزق أو خير غير متوقع، أو مبادرة جديدة تحمل في جوهرها النية الحسنة والنفع.</li>'
-    );
-  }
-
-  return '<h2>تأويل الرؤيا (' + method + ')</h2>' +
-    '<p>تفسير الرؤى في التراث يرتكز دائماً على الرموز الرئيسية في الحلم وحالة الشخص ورابطته بالرؤيا، وتأتيك هذه القراءة بأسلوب تحليلي رصين ومباشر:</p>' +
-
-    '<h3>التفسير والرموز الرئيسية</h3>' +
-    '<ul>' + symbolBlocks.join('') + '</ul>' +
-
-    '<div class="result-box">' +
-      '<strong>الخلاصة:</strong><br>' +
-      'الرؤيا بوجه عام بشرى خير وتعبير عن حسن النية والعطاء، وتدل على موقف أو مبادرة طيبة أو تواصل إيجابي قد يجمع بين الأطراف أو ينعكس بالخير والاستقرار على الأسرة، واللّه أعلم بالصواب.' +
-    '</div>';
-}
-
-function showResults(htmlText){
-  document.getElementById('loadingView').style.display = 'none';
-  document.getElementById('resultsScreen').style.display = 'block';
-  document.getElementById('resultContent').innerHTML = htmlText;
-}
-
-function resetAll(){
-  answers = {};
-  currentQ = 0;
-  document.getElementById('resultsScreen').style.display = 'none';
-  document.getElementById('introScreen').style.display = 'block';
-  document.getElementById('questionArea').style.display = 'flex';
 }
 </script>
 </body>
