@@ -153,7 +153,7 @@
   .loading .orb{
     width:50px; height:50px; margin:0 auto 20px; border-radius:50%;
     border:2px solid var(--gold-soft); border-top-color:var(--gold);
-    animation:spin 1s linear infinite;
+    animation:spin 0.6s linear infinite;
   }
   @keyframes spin{to{transform:rotate(360deg);}}
 
@@ -166,10 +166,11 @@
   .result-card h3{font-family:'Amiri',serif; font-size:18px; color:var(--teal); margin-top:22px; margin-bottom:8px;}
   .result-card p{margin:10px 0; font-size:15.5px; line-height:1.8;}
   .result-card ul{padding-right:20px; margin:10px 0;}
-  .result-card li{margin-bottom:8px; font-size:15px;}
+  .result-card li{margin-bottom:12px; font-size:15px; line-height:1.8;}
+  .result-card strong{color:var(--gold);}
   .result-box{
     background:rgba(201,162,74,0.08); border-right:3px solid var(--gold);
-    padding:14px; border-radius:8px; margin:15px 0; font-size:15px; color:var(--text);
+    padding:16px; border-radius:8px; margin:20px 0; font-size:15px; color:var(--text); line-height:1.8;
   }
   .reset-row{text-align:center; margin-top:22px;}
   .reset-btn{
@@ -347,68 +348,70 @@ function submitDream(){
   document.getElementById('progressWrap').style.display = 'none';
   document.getElementById('loadingView').style.display = 'block';
 
+  // معالجة فورية وتوليد سريع بدون تأخير
   setTimeout(function(){
-    var htmlResult = generateExpertAnalysis(answers);
+    var htmlResult = generateHumanStyleAnalysis(answers);
     showResults(htmlResult);
-  }, 1400);
+  }, 400);
 }
 
-// محرك استقراء وتفكيك الرموز الاحترافي
-function generateExpertAnalysis(d){
-  var method = d.method || 'المنظور الجعفري (أهل البيت)';
-  var age = d.age ? d.age + ' سنة' : 'غير محدد';
-  var gender = d.gender || 'الرائي';
-  var status = d.marital || 'غير محددة';
-  var timing = d.timing || 'وقت غير محدد';
-  var emotions = d.emotions || 'مشاعر مختلطة';
-  var events = d.lifeEvents || 'أمورك اليومية والحالية';
-  var dreamText = d.dreamText || '';
+// محرك الصياغة الطبيعية المعمقة (الأسلوب البشري)
+function generateHumanStyleAnalysis(d){
+  var dt = d.dreamText || '';
+  var method = d.method || 'المنظور الشعبي والتراثي';
+  
+  var symbolBlocks = [];
 
-  var symbolList = [];
+  // 1. تحليل الرموز بسلاسة وبدون أقواس
+  if(dt.indexOf('طعام') !== -1 || dt.indexOf('أكل') !== -1 || dt.indexOf('طبق') !== -1 || dt.indexOf('صحن') !== -1){
+    symbolBlocks.push(
+      '<li><strong>تقديم طبق من الطعام:</strong> إطعام الآخرين أو تقديم الأكل في الرؤى يُعد من الرموز المحمودة جداً في التراث؛ فهو يدل على الخير، والمبادرة الطيبة، والصلة، أو المنافع والمساندة المتبادلة بين الأقارب.</li>'
+    );
+  }
+  if(dt.indexOf('زوج الأخت') !== -1 || dt.indexOf('نسيب') !== -1 || dt.indexOf('زوج اختي') !== -1){
+    symbolBlocks.push(
+      '<li><strong>حضور زوج الأخت في المنام:</strong> يرمز دخول زوج الأخت للبيت إلى التواصل العائلي، أو وجود موضوع مشترك، أو نقل خبر سار يخص العائلة ويعزز التقارب.</li>'
+    );
+  } else if(dt.indexOf('قريب') !== -1 || dt.indexOf('اقارب') !== -1 || dt.indexOf('أقارب') !== -1 || dt.indexOf('أخت') !== -1 || dt.indexOf('اخت') !== -1){
+    symbolBlocks.push(
+      '<li><strong>صلة الأقارب في الرؤيا:</strong> حضور الشخصيات المقربة في المنظور التراثي يعكس امتداد الروابط الأسرية، ومؤشراً على التفاهم وانجلاء أي سوء فهم سابق.</li>'
+    );
+  }
+  if(dt.indexOf('طيران') !== -1 || dt.indexOf('أطير') !== -1 || dt.indexOf('سماء') !== -1){
+    symbolBlocks.push(
+      '<li><strong>الطيران والعلو:</strong> من رموز التحرر ونيل منزلة رفيعة، وتغلب الرائي على العوائق الواقعية التي تشغل باله.</li>'
+    );
+  }
+  if(dt.indexOf('ماء') !== -1 || dt.indexOf('نهر') !== -1 || dt.indexOf('مطر') !== -1){
+    symbolBlocks.push(
+      '<li><strong>الماء والارتواء:</strong> رمز لصفاء السريرة، والفرج القريب، وتجدد الطاقة النفسية والراحة بعد فترة إجهاد.</li>'
+    );
+  }
 
-  if(dreamText.indexOf('طعام') !== -1 || dreamText.indexOf('أكل') !== -1 || dreamText.indexOf('طبق') !== -1 || dreamText.indexOf('فاكهة') !== -1){
-    symbolList.push('<li><strong>رمز تقديم الطعام والضيافة:</strong> يُعتبر الطعام في التراث والتعبير الكلاسيكي بشارة رزق حلال أو منفعة متبادلة، وتقديمه لك من شخص آخر يرمز إلى سعي أو خَيْرٌ يُساق إليك بفضل الله وبدون مجهود شاق.</li>');
-  }
-  if(dreamText.indexOf('قريب') !== -1 || dreamText.indexOf('اقارب') !== -1 || dreamText.indexOf('أقارب') !== -1 || dreamText.indexOf('عم') !== -1 || dreamText.indexOf('خال') !== -1 || dreamText.indexOf('أخ') !== -1 || dreamText.indexOf('أخت') !== -1){
-    symbolList.push('<li><strong>رمز الأقارب وصلة الرحم:</strong> رؤية الأقارب في المنام ترتبط بالسند والمودة والرحم. إذا كان اللقاء طيباً فهو دليل على انجلاء الخلافات ودعم أسري قد تتلقاه في الأيام القادمة.</li>');
-  }
-  if(dreamText.indexOf('ماء') !== -1 || dreamText.indexOf('شرب') !== -1 || dreamText.indexOf('نهر') !== -1 || dreamText.indexOf('مطر') !== -1){
-    symbolList.push('<li><strong>رمز الماء والارتواء:</strong> رمز لصفاء السريرة، العلم النافع، وتجدد الحياة النفسية وتجاوز الشدائد.</li>');
-  }
-  if(dreamText.indexOf('طيران') !== -1 || dreamText.indexOf('أطير') !== -1 || dreamText.indexOf('سماء') !== -1 || dreamText.indexOf('عالي') !== -1){
-    symbolList.push('<li><strong>رمز الطيران والعلو:</strong> يرمز للرغبة في التحرر من الضغوط، ونيل مرتبة أو منزلة أعلى رفيعة وإحراز تقدم في أمورك الشخصية.</li>');
-  }
-  if(dreamText.indexOf('خوف') !== -1 || dreamText.indexOf('ركض') !== -1 || dreamText.indexOf('هروب') !== -1 || dreamText.indexOf('شرطة') !== -1){
-    symbolList.push('<li><strong>رمز الخوف والمطاردة:</strong> الخوف في المنام أمانٌ في اليقظة؛ وهو تعبيرٌ عن نجاة من أمر حذرته، أو تفريغ لشحنة القلق من ظروفك الحالية.</li>');
+  // إذا لم يتعرف على رمز خاص، يقدم تحليلاً عاماً رصيناً
+  if(symbolBlocks.length === 0){
+    symbolBlocks.push(
+      '<li><strong>الرموز الرئيسية وحركتها:</strong> تفاصيل الرؤيا تعكس تفاعلاً طيباً وحركة محمودة في واقعك، وتدل على سعي مبشر بالخير أو موضوع يكتمل بنجاح.</li>'
+    );
   }
 
-  if(symbolList.length === 0){
-    symbolList.push('<li><strong>تفكيك رموز السرد:</strong> الأحداث والشخصيات الواردة في رؤياك تعكس حركة رمزيّة بين الواقع والانشغال الذهني الداخلي، وتشير إلى سعي لحل مسألة تعنى بها حالياً.</li>');
+  // إضافة تحليل أثر نوع الطعام غير المباشر إن ورد
+  if(dt.indexOf('طبق') !== -1 || dt.indexOf('طعام') !== -1){
+    symbolBlocks.push(
+      '<li><strong>كون الطعام غير محدد التفاصيل:</strong> عدم تحديد النوع يُفسَّر غالباً بـ رزق أو خير غير متوقع، أو مبادرة جديدة تحمل في جوهرها النية الحسنة والنفع.</li>'
+    );
   }
 
-  return '<h2>التحليل والتعبر المعمّق (' + method + ')</h2>' +
-    '<p>قراءة تحليلية استدلالية رصينة مستندة إلى أصول تعبير الرؤى والمنظور المختار، مفككة على ضوء بياناتك <strong>(' + gender + '، العمر: ' + age + '، الحالة: ' + status + ')</strong> وسياقك اليومي.</p>' +
+  return '<h2>تأويل الرؤيا (' + method + ')</h2>' +
+    '<p>تفسير الرؤى في التراث يرتكز دائماً على الرموز الرئيسية في الحلم وحالة الشخص ورابطته بالرؤيا، وتأتيك هذه القراءة بأسلوب تحليلي رصين ومباشر:</p>' +
 
-    '<h3>1. استقراء وتفكيك رموز الحلم</h3>' +
-    '<ul>' + symbolList.join('') + '</ul>' +
-
-    '<h3>2. إسقاط الرؤيا على واقعك وضغوطك</h3>' +
-    '<p>عند ربط تفاصيل حلمك بـ <strong>(' + events + ')</strong> ومكامن شعورك بـ <strong>(' + emotions + ')</strong> وقت <strong>(' + timing + ')</strong>:</p>' +
-    '<ul>' +
-      '<li><strong>البُعد النفسي والواقعي:</strong> يظهر أن عقلك الباطن يسعى لإعادة التوازن والاطمئنان، ورؤيتك لهذه الأحداث تُعد استجابة تحفيزية لتجاوز حالة التردد أو القلق التراكمي.</li>' +
-      '<li><strong>الدلالة المستقبلية:</strong> بالنسبة لـ (' + gender + ' بعمر ' + age + ')، تتجه دلالات الرؤيا نحو انفراج قادم وتسهيل في المسائل المعقدة، وربما تلقي دعم معنوي أو مادي يُعيد لك الاستقرار.</li>' +
-    '</ul>' +
+    '<h3>التفسير والرموز الرئيسية</h3>' +
+    '<ul>' + symbolBlocks.join('') + '</ul>' +
 
     '<div class="result-box">' +
-      '<strong>خلاصة التعبير الخبير:</strong><br>' +
-      'الرؤيا تحمل في مجملها بشائر خير وتيسير، وتدعو للطمأنينة والتفاؤل بزوال الهموم والضغوط، مع التركيز على حسن الظن والتوكل على الله.' +
-    '</div>' +
-
-    '<h3>3. التوصية والدلالة الإرشادية</h3>' +
-    '<ul>' +
-      '<li>استبشر بالخير، وتجنب التفكير المجهد قبل النوم.</li>' +
-      '<li>اجعل من الرؤيا دافعاً لتقوية مهاراتك وعلاقاتك المقربة وتجاوز مشاعر التردد.</li>' +
-    '</ul>';
+      '<strong>الخلاصة:</strong><br>' +
+      'الرؤيا بوجه عام بشرى خير وتعبير عن حسن النية والعطاء، وتدل على موقف أو مبادرة طيبة أو تواصل إيجابي قد يجمع بين الأطراف أو ينعكس بالخير والاستقرار على الأسرة، واللّه أعلم بالصواب.' +
+    '</div>';
 }
 
 function showResults(htmlText){
