@@ -103,6 +103,20 @@
   .start-btn:active{transform:translateY(1px);}
   .meta-note{font-size:12px; color:var(--text-dim); margin-top:16px; opacity:.8; position:relative; z-index:2;}
 
+  /* Interpretation card styles */
+  .interpretation-card{background:linear-gradient(180deg, rgba(20,25,50,0.9), rgba(15,18,36,0.95)); border:1px solid rgba(255,255,255,0.04); padding:18px; border-radius:12px; color:var(--text);}
+  .interpretation-card .card-head{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px}
+  .interpretation-card .card-head h2{margin:0; font-size:18px; color:var(--gold)}
+  .interpretation-card .meta{font-size:12px; color:var(--text-dim)}
+  .interpretation-card .card-section{margin:12px 0}
+  .symbol-list{display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; margin:0}
+  .symbol-list li{background:rgba(255,255,255,0.04); padding:6px 10px; border-radius:8px;}
+  .evidence{background:rgba(255,255,255,0.03); padding:10px; border-radius:8px; white-space:pre-wrap; font-size:13px}
+  .advice{font-weight:600; color:var(--teal);}
+  .card-footer{display:flex; justify-content:flex-end; margin-top:10px}
+  .card-footer .btn{min-width:160px;}
+
+
   /* ===== Question screens ===== */
   #questionArea{flex:1; display:flex; flex-direction:column; justify-content:center; padding:28px 2px 30px;}
   .q-screen{display:none; animation:fadeIn .3s ease;}
@@ -338,19 +352,26 @@ const METHODS = {
 };
 
 const questions = [
-  { id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'راح نركّز التحليل على الزاوية الي تختارها',
+  // Step 1: Personal & Demographic Context
+  { id:'method', type:'choice', title:'شنو المنهج الي تريد التفسير يعتمده؟', sub:'اختر المنهج (المنهج الجعفري موصى به)',
     options:['المنظور الجعفري (أهل البيت)','التحليل النفسي والتحليلي','ابن سيرين (التراث الكلاسيكي العام)','التأويل الرمزي العام','شامل — كل الجوانب معًا'], required:true },
-  { id:'age', type:'number', title:'كم عمرك؟', sub:null, placeholder:'مثال: 27', required:true },
-  { id:'gender', type:'choice', title:'ما جنسك؟', sub:null, options:['ذكر','أنثى'], required:true },
-  { id:'marital', type:'choice', title:'ما حالتك الاجتماعية؟', sub:null,
-    options:['أعزب / عزباء','مخطوب / مخطوبة','متزوج / متزوجة','مطلّق / مطلّقة','أرمل / أرملة'], required:true },
-  { id:'occupation', type:'text', title:'ما مهنتك أو مجال دراستك؟', sub:null, placeholder:'مثال: طالب هندسة، موظف...', required:true },
-  { id:'health', type:'text', title:'هل توجد حالة صحية مؤثرة؟', sub:'اتركه فارغًا إذا لا يوجد شيء مؤثر', placeholder:'اختياري', required:false },
+  { id:'age', type:'number', title:'العمر (سنة)', sub:null, placeholder:'مثال: 30', required:true },
+  { id:'marital', type:'choice', title:'الحالة الزوجية', sub:null,
+    options:['أعزب','مخطوب','متزوج','مطلق','أرمل'], required:true },
+  { id:'sons', type:'number', title:'عدد الأبناء (ذكور)', sub:null, placeholder:'0', required:false },
+  { id:'daughters', type:'number', title:'عدد البنات', sub:null, placeholder:'0', required:false },
+  { id:'brothers', type:'number', title:'عدد الإخوة', sub:null, placeholder:'0', required:false },
+  { id:'sisters', type:'number', title:'عدد الأخوات', sub:null, placeholder:'0', required:false },
+  { id:'occupation', type:'text', title:'المهنة أو مجال الدراسة', sub:null, placeholder:'مثال: طالب/موظف...', required:true },
+  { id:'health', type:'text', title:'حالة صحية مؤثرة (اختياري)', sub:null, placeholder:'اختياري', required:false },
+
+  // Step 2: Dream Details & Timing
   { id:'timing', type:'choice', title:'متى رأيت هذا الحلم؟', sub:null,
-    options:['بعد منتصف الليل','قبيل الفجر','في القيلولة أو النهار','أول الليل','غير متذكر بدقة'], required:true },
-  { id:'emotions', type:'text', title:'ما المشاعر التي راودتك أثناء الحلم؟', sub:null, placeholder:'خوف، فرح، حيرة، راحة...', required:true },
-  { id:'lifeEvents', type:'textarea', title:'ما أهم الأحداث أو الضغوط التي تمر بها حاليًا؟', sub:'هذا يساعد في ربط الحلم بواقعك', placeholder:'مثال: قرب موعد الزواج، مشكلة عمل، فراق، امتحانات...', required:true },
-  { id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم كاملًا بالتفصيل', sub:'بترتيب حدوثه: الأشخاص، الأماكن، الألوان، الأرقام، الحيوانات، الأفعال', placeholder:'اكتب هنا...', required:true }
+    options:['ليل','قبيل الفجر','نهار/قيلولة','أول الليل','غير متذكر'], required:true },
+  { id:'emotions', type:'text', title:'المشاعر أثناء الحلم', sub:null, placeholder:'خوف، فرح، حيرة...', required:true },
+  { id:'numbersMentioned', type:'text', title:'هل ذُكرت أرقام في الحلم؟ (أذكرها مفصولة بمسافة)', sub:null, placeholder:'مثال: 7 40 3', required:false },
+  { id:'lifeEvents', type:'textarea', title:'أهم الأحداث/الضغوط الحالية', sub:'هذا يساعد في ربط الحلم بواقعك', placeholder:'مثال: قرب زواج، ضغط عمل، امتحانات...', required:false },
+  { id:'dreamText', type:'textarea', big:true, title:'اكتب الحلم بالتفصيل (الأشخاص، الأماكن، الأرقام، الألوان، الحيوانات)', sub:'بترتيب حدوثه', placeholder:'اكتب هنا...', required:true }
 ];
 
 const METHOD_KEY_MAP = {
@@ -459,28 +480,86 @@ function goBack(){
   }
 }
 
-function generateLocalAnalysis(instruction, data, method, answers){
-  const dreamKeywords = (data.dreamText || '').split(/\s+/).filter(w => w.length > 2);
-  const emotions = data.emotions || 'لا يوجد';
-  const age = data.age || 'غير محدد';
-  
-  const responses = {
-    'إعادة صياغة الحلم': `في هذا الحلم، يظهر الرائي (${age} سنة) يعيش مشهدًا يدور حول عناصر تعكس حالته الراهنة. من خلال السياق المعطى، ينقل الحلم انطباعات تتعلق بـ: ${emotions}. الأحداث المتسلسلة في الحلم تبدو أنها انعكاس لـ: ${data.lifeEvents || 'ظروف الحياة العامة'}. الرموز الأساسية التي تبرز هي: ${dreamKeywords.slice(0, 3).join(', ') || 'عناصر متعددة'}.`,
-    
-    'تحليل الرموز': `• **الرموز الرئيسية**: الرموز الظاهرة في الحلم تحمل دلالات متعددة. بناءً على سياق الرائي (${data.occupation || 'غير محدد'})، قد تشير إلى جوانب من واقعه اليومي.\n• **الألوان والعناصر**: تعكس الحالة الانفعالية وتنم عن توازن أو عدم توازن في الحياة.\n• **الحركة والأماكن**: تجسد رغبات الرائي واهتماماته، وقد تشير إلى تحديات أو فرص.`,
-    
-    'التفسير الرئيسي': `بناءً على المنهج المختار (${method.label})، يمكن تفسير هذا الحلم كانعكاس لحالة الرائي النفسية والاجتماعية. الحلم يحمل رسائل تتعلق بـ: ${emotions}. المعاني الأعمق قد تشير إلى: احتياجات نفسية، طموحات لم تُعبَّر، أو استجابة لأحداث حياتية مؤثرة كـ ${data.lifeEvents || 'ما يمر به الرائي حاليًا'}.`,
-    
-    'اللمحة النفسية': `من الناحية النفسية، يعكس هذا الحلم حالة الوعي واللاوعي لدى الرائي. قد يكون الحلم بمثابة محاولة من العقل الباطن للتعبير عن مشاعر مكبوتة أو رسالة توجيهية. الانتباه إلى تفاصيل الحلم قد يساعد في فهم أعمق للذات وتحقيق توازن نفسي أفضل.`,
-  };
-  
-  for(let key in responses){
-    if(instruction.includes(key)){
-      return responses[key];
+async function generateJaafariAnalysis(data, method){
+  // Load local evidence DB
+  let evidence = {};
+  try{
+    const res = await fetch('/dream-app/data/evidence.json');
+    evidence = await res.json();
+  }catch(e){ console.warn('Could not load evidence DB, proceeding without it', e); }
+
+  const text = (data.dreamText || '').toLowerCase();
+  const foundSymbols = new Set();
+  const evidences = [];
+
+  // match keywords from evidence DB
+  for(const key in evidence){
+    const item = evidence[key];
+    if(!item || !item.keywords) continue;
+    for(const kw of item.keywords){
+      if(text.includes(kw)){
+        foundSymbols.add(kw);
+        evidences.push({ symbol: kw, quran: item.quran || '', hadith: item.hadith || '', note: item.note || '' });
+        break;
+      }
     }
   }
-  
-  return `## تحليل شامل\nهذا الحلم يعكس جوانب من حياة الرائي ويحمل معاني عميقة تتعلق بـ ${emotions}. التفسير يختلف بناءً على السياق الشخصي للرائي وظروفه الحالية.`;
+
+  // extract numbers
+  const numbers = (data.numbersMentioned || '') ? (''+data.numbersMentioned).split(/\s+/).filter(Boolean) : [];
+  for(const n of numbers){ foundSymbols.add(n); }
+
+  const symbols = Array.from(foundSymbols);
+
+  // Simple categorization heuristics
+  let category = 'أضغاث أحلام'; // default psychological/subconscious
+  const alertKeywords = ['حية','ثعبان','أفعى','حريق','دم'];
+  const gladKeywords = ['مطر','ماء','رزق','ذهب','فرح','نصر'];
+  for(const s of symbols){
+    if(alertKeywords.some(k=> s.includes(k))){ category = 'تنبيه'; break; }
+    if(gladKeywords.some(k=> s.includes(k))){ category = 'بشرى'; }
+  }
+
+  // Build summary following Ja'fari perspective (localized guidance)
+  const summaryLines = [];
+  summaryLines.push(`المنهج المستخدم: ${method.label}`);
+  summaryLines.push(`بوضعيات الرائي: العمر ${data.age || 'غير محدد'}، الحالة الزوجية: ${data.marital || 'غير محددة'}`);
+  if(data.sons || data.daughters) summaryLines.push(`أفراد الأسرة: ${data.sons || 0} أبناء، ${data.daughters || 0} بنات`);
+  if(symbols.length) summaryLines.push(`الرموز البارزة في الحلم: ${symbols.join(', ')}`);
+  summaryLines.push(`التصنيف الاحتمالي: ${category}`);
+
+  // compile evidence text
+  let evidenceText = '';
+  if(evidences.length){
+    evidenceText = evidences.map(e=> {
+      return `- رمز: ${e.symbol}\n  - القرآن: ${e.quran}\n  - الحديث/الرواية: ${e.hadith}${e.note ? '\n  - ملاحظة: ' + e.note : ''}`;
+    }).join('\n\n');
+  } else if(numbers.length){
+    evidenceText = `ذُكرت أرقام في الحلم: ${numbers.join(', ')}. راجع دلالات الأرقام في التراث والقرآن (مثل 7، 40).`;
+  } else {
+    evidenceText = 'لا يوجد مرجع مباشر في قاعدة الأدلة المحلية لهذه الرموز؛ يُنصح بالرجوع إلى مراجع تفسير معتمدة.';
+  }
+
+  // spiritual advice heuristics
+  let spiritualAdvice = '';
+  if(category === 'تنبيه'){
+    spiritualAdvice += 'نصيحة: راجع حالتك من جهة العبادة والدعاء، وتحقق من علاقاتك الاجتماعية وتجنب النزاعات. '; 
+    spiritualAdvice += 'إن أمكن، استشر عالماً من أهل البيت أو شيخ موثوق.';
+  } else if(category === 'بشرى'){
+    spiritualAdvice += 'نصيحة: حافظ على الشكر والذكر، واحتسب النعم، وادعُ أن يتقرّب الخير إلى أهلك.';
+  } else {
+    spiritualAdvice += 'نصيحة: اعتنِ بالصحة النفسية، خصص وقتًا للتأمل والراحة، وتحدث مع قريب موثوق عن ضغوطك.';
+  }
+
+  const result = {
+    symbols: symbols,
+    summary: summaryLines.join('\n'),
+    evidence_quran_hadith: evidenceText,
+    spiritual_advice: spiritualAdvice,
+    category: category
+  };
+
+  return result;
 }
 
 async function beginAnalysis(){
@@ -493,6 +572,11 @@ async function beginAnalysis(){
     timing: answers.timing || '',
     emotions: answers.emotions || '',
     lifeEvents: answers.lifeEvents || '',
+    numbersMentioned: answers.numbersMentioned || '',
+    sons: answers.sons || 0,
+    daughters: answers.daughters || 0,
+    brothers: answers.brothers || 0,
+    sisters: answers.sisters || 0,
     dreamText: answers.dreamText || ''
   };
 
@@ -504,102 +588,17 @@ async function beginAnalysis(){
 
   const method = METHODS[METHOD_KEY_MAP[answers.method]] || METHODS.jaafari;
 
-  const systemPrompt = `أنت محلل أحلام متخصص، تعمل بمنهجية احترافية عميقة، على مراحل متتالية قصيرة، كل مرحلة قسم واحد يبني على ما قبله دون تكرار.
-
-طريقة التفسير المطلوبة من الرائي لهذا التحليل: ${method.label}
-${method.systemFocus}
-
-قواعد عامة تلتزم بها في كل مرحلة:
-- استخرج الرموز والدلالات من نص الحلم المُدخل حصرًا، دون اختلاق تفاصيل غير مذكورة.
-- اعرض أي تفسير ديني بوصفه اجتهادًا معرفيًا لا حكمًا يقينيًا قاطعًا.
-- الجانب الثانوي (نفسي أو ديني بحسب المنهج المختار) إضافة موجزة وداعمة فقط، لا محورًا موازيًا للمحور الأساسي.
-
-أسلوب الكتابة:
-- عربية فصحى احترافية، دقيقة، بلا حشو ولا تكرار.
-- عمّق التحليل: لا تكتفِ بجمل مبتورة، اشرح كل نقطة بما يكفي لفهمها، لكن دون إطالة لا داعي لها.
-- عنوان Markdown واحد (##) لكل مرحلة، دون مقدمات أو خواتيم عامة خارج القسم المطلوب، ودون تكرار ما ورد في مراحل سابقة.
-
-إذا كان نص الحلم مبهمًا جدًا يستحيل معه أي تحليل حقيقي، اذكر فقط التفاصيل الناقصة المطلوبة بدل التفسير، في كل المراحل.`;
-
-  const contextBlock = `بيانات الرائي:
-- العمر: ${data.age}
-- الجنس: ${data.gender}
-- الحالة الاجتماعية: ${data.marital}
-- المهنة/الدراسة: ${data.occupation}
-- حالة صحية مؤثرة: ${data.health}
-
-ظروف الحلم:
-- وقت الحلم: ${data.timing}
-- المشاعر أثناء الحلم: ${data.emotions}
-- أهم الأحداث/الضغوط الحالية: ${data.lifeEvents}
-
-نص الحلم:
-${data.dreamText}`;
-
-  let middleSections;
-  if(method.multi){
-    middleSections = method.extraSections.map((sec, i) => ({
-      label: `جاري صياغة المحور ${i+1} من ${method.extraSections.length}...`,
-      instruction: sec.title + "\n" + sec.instruction
-    }));
-  } else {
-    middleSections = [
-      { label: "جاري صياغة التفسير الرئيسي...", instruction: method.mainTitle + "\n" + method.mainInstruction },
-      { label: "جاري إضافة اللمحة التكميلية...", instruction: method.secondaryTitle + "\n" + method.secondaryInstruction }
-    ];
-  }
-
-  const sections = [
-    { label: "جاري إعادة صياغة الحلم وتحديد أطراف المشهد...", instruction: "## إعادة صياغة الحلم\n(أعد صياغة الحلم بترتيبه الزمني في فقرة واحدة مركّزة، مع إبراز أهم التفاصيل التي ستُبنى عليها الرموز لاحقًا)" },
-    { label: "جاري تحليل الرموز بعمق...", instruction: "## تحليل الرموز\n(حدد الرموز المحورية والثانوية في الحلم: الأشخاص، الأماكن، الألوان، الأرقام، الحيوانات، الأفعال، المشاعر. لكل رمز محوري اكتب سطرين إلى ثلاثة أسطر توضح دلالاته المحتملة؛ وللرموز الثانوية سطر واحد يكفي)" },
-    ...middleSections,
-    { label: "جاري ترتيب الاحتمالات وتقدير الترجيح...", instruction: "## ترتيب الاحتمالات\n(اذكر أقوى احتمالين إلى ثلاثة لمعنى الحلم مرتبة من الأقوى إلى الأضعف، مع سبب الترجيح لكل احتمال في سطرين، وتمييز ما هو انعكاس ليوميات الرائي عمّا قد يحمل دلالة أعمق)" },
-    { label: "جاري كتابة الخلاصة والتوصيات...", instruction: "## الخلاصة\n(ملخص من 4 إلى 5 نقاط واضحة كل نقطة سطر أو سطرين، ثم درجة ثقة عامة: منخفضة/متوسطة/مرتفعة مع سبب موجز، ثم سؤال أو سؤالان إضافيان فقط إن كانا ضروريين لتوضيح التفسير أكثر)" }
-  ];
-
-  let messages = [{ role: "user", content: contextBlock + "\n\n" + sections[0].instruction }];
-  let fullText = "";
-  const loadingEl = document.getElementById('loadingText');
-  const stepCountEl = document.getElementById('stepCount');
-
   try{
-    for(let s = 0; s < sections.length; s++){
-      loadingEl.textContent = sections[s].label;
-      stepCountEl.textContent = `المرحلة ${s+1} من ${sections.length}`;
-      if(s > 0){
-        messages.push({ role: "user", content: sections[s].instruction });
-      }
-
-      let stepText = "";
-      try{
-        // Generate analysis locally without API
-        stepText = generateLocalAnalysis(sections[s].instruction, data, method, answers);
-        
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
-      }catch(e){ 
-        stepText = `حدث خطأ في إنشاء المرحلة. يرجى المحاولة مرة أخرى.`;
-      }
-      
-      if(!stepText){ throw new Error("Empty response at step " + s); }
-
-      messages.push({ role: "assistant", content: stepText });
-      fullText += (fullText ? "\n\n" : "") + stepText;
-      document.getElementById('resultContent').innerHTML = renderMarkdown(fullText);
-    }
-
+    const analysis = await generateJaafariAnalysis(data, method);
+    // render structured card
+    document.getElementById('resultContent').innerHTML = renderInterpretationCard(analysis, data, method);
     document.getElementById('loadingView').style.display = 'none';
     document.getElementById('resultsScreen').style.display = 'block';
     window.scrollTo({top:0, behavior:'smooth'});
   }catch(err){
+    console.error('Analysis error', err);
     document.getElementById('loadingView').style.display = 'none';
-    if(fullText){
-      document.getElementById('resultContent').innerHTML =
-        renderMarkdown(fullText) + "<p>⚠️ حدث انقطاع في الاتصال قبل إكمال كل المراحل — هذا التحليل جزئي. يمكنك بدء تحليل جديد لإعادة المحاولة.</p>";
-    } else {
-      document.getElementById('resultContent').innerHTML =
-        "<p>حدث خطأ أثناء توليد التحليل، غالبًا بسبب انقطاع مؤقت بالاتصال. الرجاء الضغط على «تحليل حلم جديد» والمحاولة مرة أخرى.</p>";
-    }
+    document.getElementById('resultContent').innerHTML = '<p>حدث خطأ أثناء إنشاء التحليل المحلي. الرجاء المحاولة مرة أخرى.</p>';
     document.getElementById('resultsScreen').style.display = 'block';
   }
 }
@@ -615,6 +614,40 @@ function resetAll(){
 
 // Minimal markdown -> HTML renderer
 function escapeHtml(str){ return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderInterpretationCard(analysis, data, method){
+  const symbolsHtml = analysis.symbols.length ? `<ul class="symbol-list">${analysis.symbols.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul>` : '<p class="muted">لا رموز بارزة.</p>';
+  const evidenceHtml = `<pre class="evidence">${escapeHtml(analysis.evidence_quran_hadith)}</pre>`;
+  const adviceHtml = `<p class="advice">${escapeHtml(analysis.spiritual_advice)}</p>`;
+
+  return `
+    <div class="interpretation-card">
+      <header class="card-head">
+        <h2>النتيجة: ${escapeHtml(analysis.category)}</h2>
+        <div class="meta">المنهج: ${escapeHtml(method.label)} — العمر: ${escapeHtml(data.age || 'غير محدد')}</div>
+      </header>
+      <section class="card-section symbols">
+        <h3>الرموز المستخرجة</h3>
+        ${symbolsHtml}
+      </section>
+      <section class="card-section summary">
+        <h3>الملخص</h3>
+        <p>${escapeHtml(analysis.summary).replace(/\n/g,'<br>')}</p>
+      </section>
+      <section class="card-section evidence">
+        <h3>الأدلة (القرآن والأحاديث المرجعية)</h3>
+        ${evidenceHtml}
+      </section>
+      <section class="card-section advice">
+        <h3>نصيحة روحية</h3>
+        ${adviceHtml}
+      </section>
+      <footer class="card-footer">
+        <button class="btn btn-primary" onclick="resetAll()">تحليل حلم جديد</button>
+      </footer>
+    </div>
+  `;
+}
+
 function renderMarkdown(md){
   const lines = escapeHtml(md).split('\n');
   let html = '';
