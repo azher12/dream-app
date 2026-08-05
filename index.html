@@ -589,7 +589,21 @@ async function beginAnalysis(){
   const method = METHODS[METHOD_KEY_MAP[answers.method]] || METHODS.jaafari;
 
   try{
-    const analysis = await generateJaafariAnalysis(data, method);
+    // Prefer server API if available
+    const payload = Object.assign({}, data, { method: method });
+    let analysis = null;
+    try{
+      const resp = await fetch('/api/interpret', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      if(resp.ok){
+        const json = await resp.json();
+        if(json && json.analysis) analysis = json.analysis;
+      }
+    }catch(e){ console.warn('Server API not available, falling back to local analysis', e); }
+
+    if(!analysis){
+      analysis = await generateJaafariAnalysis(data, method);
+    }
+
     // render structured card
     document.getElementById('resultContent').innerHTML = renderInterpretationCard(analysis, data, method);
     document.getElementById('loadingView').style.display = 'none';
@@ -598,7 +612,7 @@ async function beginAnalysis(){
   }catch(err){
     console.error('Analysis error', err);
     document.getElementById('loadingView').style.display = 'none';
-    document.getElementById('resultContent').innerHTML = '<p>حدث خطأ أثناء إنشاء التحليل المحلي. الرجاء المحاولة مرة أخرى.</p>';
+    document.getElementById('resultContent').innerHTML = '<p>حدث خطأ أثناء إنشاء التحليل. الرجاء المحاولة مرة أخرى.</p>';
     document.getElementById('resultsScreen').style.display = 'block';
   }
 }
